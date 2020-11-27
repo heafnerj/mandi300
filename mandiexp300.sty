@@ -1,0 +1,158 @@
+%%
+%% This is file `mandiexp.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% mandi.dtx  (with options: `package')
+%% 
+%% Copyright (C) 2020 by Paul J. Heafner <heafnerj@gmail.com>
+%% ---------------------------------------------------------------------------
+%% This  work may be  distributed and/or modified  under the conditions of the
+%% LaTeX Project Public  License, either  version 1.3  of this  license or (at
+%% your option) any later version. The latest version of this license is in
+%%            http://www.latex-project.org/lppl.txt
+%% and  version 1.3 or  later is  part of  all distributions of  LaTeX version
+%% 2005/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status `maintained'.
+%% 
+%% The Current Maintainer of this work is Paul J. Heafner.
+%% 
+%%  This work consists of the files mandi.dtx
+%%                                  mandi.ins
+%%                                  mandi.pdf
+%%                                  README
+%% 
+%%  and includes the derived files  mandi.sty
+%%                                  vdemo.py.
+%% ---------------------------------------------------------------------------
+%% 
+%  NOTE: THE NUMBERS WILL NOT BE IN THE FINAL PACKAGE NAME!
+\ProvidesPackage{mandiexp300}[2020/11/26 v3.0.0 Macros for Matter And Interactions]
+\NeedsTeXFormat{LaTeX2e}[1999/12/01]
+
+% Package Version
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand*{\mandiexpversion}{v3.0.0alpha dated 2020/11/26}
+\typeout{}
+\typeout{mandiexp: You're using mandiexp version \mandiexpversion.}
+\typeout{}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Commands specific to Matter & Interactions
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  Make these accommodate arrowed vectors.
+\NewDocumentCommand{\lhsmomentumprinciple}{ s }{%
+    \IfBooleanTF{#1}%
+    {\vec{p}_{\symup{sys,final}}}% We have a *.
+    {\Delta\vec{p}_{\symup{sys}}}% We don't have a *.
+}%
+\NewDocumentCommand{\rhsmomentumprinciple}{ s }{%
+    \IfBooleanT{#1}%
+    {\vec{p}_{\symup{sys,initial}}+}% We have a *.
+    \vec{F}_{\symup{sys,net}}\,\Delta t%
+}%
+\NewDocumentCommand{\momentumprinciple}{ s }{%
+    \IfBooleanTF{#1}%
+    {\lhsmomentumprinciple* = \rhsmomentumprinciple*}% We have a *.
+    {\lhsmomentumprinciple = \rhsmomentumprinciple}% We don't have a *.
+}%
+\NewDocumentCommand{\lhsenergyprinciple}{ s }{%
+    \IfBooleanTF{#1}%
+    {E_{\symup{sys,final}}}% We have a *.
+    {\Delta E_{\symup{sys}}}% We don't have a *.
+}%
+\NewDocumentCommand{\rhsenergyprinciple}{ s }{%
+    \IfBooleanT{#1}%
+    {E_{\symup{sys,initial}}+}% We have a *.
+    W_{\symup{ext}}+Q%
+}%
+\NewDocumentCommand{\energyprinciple}{ s }{%
+    \IfBooleanTF{#1}%
+    {\lhsenergyprinciple* = \rhsenergyprinciple*}% We have a *.
+    {\lhsenergyprinciple = \rhsenergyprinciple}% We don't have a *.
+}%
+\NewDocumentCommand{\lhsangularmomentumprinciple}{ s }{%
+    \IfBooleanTF{#1}%
+    {\vec{L}_{A,\symup{sys,final}}}% We have a *.
+    {\Delta\vec{L}_{A\symup{,sys}}}% We don't have a *.
+}%
+\NewDocumentCommand{\rhsangularmomentumprinciple}{ s }{%
+    \IfBooleanT{#1}%
+    {\vec{L}_{A\symup{,sys,initial}}+}% We have a *.
+    \vec{\tau}_{A\symup{,sys,net}}\,\Delta t%
+}%
+\NewDocumentCommand{\angularmomentumprinciple}{ s }{%
+    \IfBooleanTF{#1}%
+    {\lhsangularmomentumprinciple* = \rhsangularmomentumprinciple*}% We have a *.
+    {\lhsangularmomentumprinciple = \rhsangularmomentumprinciple}% We don't have a *.
+}%
+\NewDocumentCommand{\energyof}{ m o }{%
+  E_{#1\IfValueT{#2}{,#2}}%
+}%
+\NewDocumentCommand{\systemenergy}{ o }{%
+  E_{\symup{sys}\IfValueT{#1}{,#1}}%
+}%
+\NewDocumentCommand{\particleenergy}{ o }{%
+  E_{\symup{particle}\IfValueT{#1}{,#1}}%
+}%
+\NewDocumentCommand{\restenergy}{ o }{%
+  E_{\symup{rest}\IfValueT{#1}{,#1}}%
+}%
+\NewDocumentCommand{\internalenergy}{ o }{%
+  E_{\symup{internal}\IfValueT{#1}{,#1}}%
+}%
+\NewDocumentCommand{\chemicalenergy}{ o }{%
+  E_{\symup{chem}\IfValueT{#1}{,#1}}%
+}%
+\NewDocumentCommand{\thermalenergy}{ o }{%
+  E_{\symup{therm}\IfValueT{#1}{,#1}}%
+}%
+\NewDocumentCommand{\photonenergy}{ o }{%
+  E_{\symup{photon}\IfValueT{#1}{,#1}}%
+}%
+\NewDocumentCommand{\translationalkineticenergy}{ s d[] }{%
+  % d[] must be used because of the way consecutive optional
+  %  arguments are handled. See xparse docs for details.
+  %  See https://tex.stackexchange.com/a/569011/218142
+  \IfBooleanTF{#1}%
+  {E_\bgroup \symup{K}}% We have a *.
+  {K_\bgroup\symup{trans}}% We don't have a *.
+       \IfValueT{#2}{,#2}%
+     \egroup
+}%
+\NewDocumentCommand{\rotationalkineticenergy}{ s d[] }{%
+  % d[] must be used because of the way consecutive optional
+  %  arguments are handled. See xparse docs for details.
+  %  See https://tex.stackexchange.com/a/569011/218142
+  \IfBooleanTF{#1}%
+  {E_\bgroup}% We have a *.
+  {K_\bgroup}% We don't have a *.
+       \symup{rot}\IfValueT{#2}{,#2}%
+     \egroup
+}%
+\NewDocumentCommand{\vibrationalkineticenergy}{ s d[] }{%
+  % d[] must be used because of the way consecutive optional
+  %  arguments are handled. See xparse docs for details.
+  %  See https://tex.stackexchange.com/a/569011/218142
+  \IfBooleanTF{#1}%
+  {E_\bgroup}% We have a *.
+  {K_\bgroup}% We don't have a *.
+       \symup{vib}\IfValueT{#2}{,#2}%
+     \egroup
+}%
+\NewDocumentCommand{\gravitationalpotentialenergy}{ o }{%
+  U_{\symup{g}\IfValueT{#1}{,#1}}%
+}%
+\NewDocumentCommand{\electricpotentialenergy}{ o }{%
+  U_{\symup{e}\IfValueT{#1}{,#1}}%
+}%
+\NewDocumentCommand{\springpotentialenergy}{ o }{%
+  U_{\symup{s}\IfValueT{#1}{,#1}}%
+}%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\endinput
+%%
+%% End of file `mandiexp.sty'.

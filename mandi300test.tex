@@ -1,0 +1,773 @@
+% !TEX TS-program = lualatexmk
+% !TEX encoding = UTF-8 Unicode
+%
+% Minimal Template Version 20200722
+%
+
+\documentclass{article}
+\usepackage{mandi300}         % main mandi package
+\mandisetup{}                 % mandi package options
+\usepackage{mandiexp300}      % expressions for M&I; optional
+\hypersetup{colorlinks=false} % borders around links
+%\hypersetup{colorlinks=true} % colored links; no borders
+
+% These are for demon purposes.
+\usepackage{geometry}    % needed for changing margins
+\usepackage{lipsum}
+
+\newcommand*{\mandi}{\texttt{mandi}}
+\newcommand*{\mandiexp}{\texttt{mandiexp}}
+\newcommand*{\GlowScript}{\texttt{GlowScript}}
+\newcommand*{\VPython}{\texttt{VPython}}
+\newcommand*{\lualatex}{Lua\LaTeX}
+
+% We need a new command for in-line listings to prevent overfull boxes.
+% Anything in |...| will be in small plain text.
+\lstMakeShortInline[basicstyle=\normalfont\ttfamily\small]|
+
+\begin{document}
+\tableofcontents
+\lstlistoflistings
+\newpage
+
+% We need narrower margins to demonstrate certain fonts and features.
+% Remember \newgeometry forces a page break.
+\newgeometry{left=0.5in,right=0.5in}
+This is the new 
+\href{https://www.ctan.org/pkg/mandi}{\normalfont\ttfamily\small mandi} 
+package (\mandiversion), which creates a habitat specifically for introductory physics students. 
+It provides consistent notation conventions that align with ISO 80000-2 recommendations. This document
+is a demonstration for the new package and should not be taken as official documentation. Features
+are not necessarily final and are still subject to change.
+
+\section{Fonts}
+\subsection{Text Mode Fonts}
+\subsubsection{Default Text Font Parameters}
+To begin with, let's look at the fonts we have at our disposal. Let's look at the 
+default text mode font parameters first.
+
+\begin{center}
+  \begin{tabular}{l l}
+    |\encodingdefault| & \encodingdefault \\
+    |\familydefault|   & \familydefault   \\
+    |\seriesdefault|   & \seriesdefault   \\
+    |\shapedefault|    & \shapedefault    \\
+    |\rmdefault|       & \rmdefault       \\
+    |\sfdefault|       & \sfdefault       \\
+    |\ttdefault|       & \ttdefault       \\
+    |\bfdefault|       & \bfdefault       \\
+    |\updefault|       & \updefault       \\
+    |\itdefault|       & \itdefault       \\
+    |\mddefault|       & \mddefault       \\
+    |\sldefault|       & \sldefault       \\
+    |\scdefault|       & \scdefault       \\
+  \end{tabular}
+\end{center}
+
+\subsubsection{Text Mode Font Commands}
+Now let's look at the text mode commands for changing fonts and their accompanying
+results. Note that these commands require braced arguments and work only within the 
+scope of the braces.
+\begin{center}
+  \begin{tabular}{l}
+    Text Mode Commands                                                          \\
+    The default normal text is |\textnormal{...}|.                         \\
+    \textnormal{abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789} \\
+    To get roman letters, use |\textrm{...}|.                              \\
+    \textrm{abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789}     \\
+    To get san serif letters, use |\textsf{...}|.                          \\
+    \textsf{abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789}     \\
+    To get typewriter letters, use |\texttt{...}|.                         \\
+    \texttt{abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789}     \\
+    To get medium letters, use |\textmd{...}|.                             \\
+    \textmd{abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789}     \\
+    To get boldface letters, use |\textbf{...}|.                           \\
+    \textbf{abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789}     \\
+    Text up |\textup{...}|                                                 \\
+    \textup{abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789}     \\
+    To get italic letters, use |\textit{...}|.                             \\
+    \textit{abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789}     \\
+    To get slanted letters, use |\textsl{...}|.                            \\
+    \textsl{abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789}     \\
+    To get small capital letters, use |\textsc{...}|.                      \\
+    \textsc{abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789}     \\
+  \end{tabular}
+\end{center}
+Some of those text mode commands may seem redundant to you, and there are some you 
+will never need to use, so don't worry if they look confusing. Remember that 
+|\textnormal{...}| is the default and all you have to do to get it is start
+typing; no command is necessary unless you have changed something (and that's usually 
+difficult to do). These text font commands can be used together if you remember to 
+nest the braces correctly. Look at the following table.
+
+\begin{center}
+  \begin{tabular}{l}
+    Combined Text Mode Commands                                                      \\
+    To get boldface san serif letters, use |\textbf{\textsf{...}}|.             \\
+    \textbf{\textsf{abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789}} \\
+    To get boldface italic letters, use |\textbf{\textit{...}}|.                \\
+    \textbf{\textit{abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789}} \\
+    To get boldface slanted letters, use |\textbf{\textsl{...}}|.               \\
+    \textbf{\textsl{abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789}} \\
+    %To get boldface small capital letters, use |\textbf{\textsc{...}}|.         \\
+    %\textbf{\textsc{abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789}} \\
+  \end{tabular}
+\end{center}
+
+\subsubsection{Emphasizing Words in Text Mode}
+For semantic reasons, it's important to use |\emph{...}| when you want to 
+emphasize a word. Use |\emph{vector}| to emphasize the word \emph{vector} or 
+|\emph{momentum}| to emphasize the word \emph{momentum}. In most documents, 
+|\emph{...}| defaults to italics, but it may default to something else when 
+using a different document class. Let the document class do its work and you will 
+have fewer things to remember. 
+
+\subsubsection{Text Mode Font Switches}
+Next, let's look as the various text mode switches you can use. They are called 
+\emph{switches} rather than \emph{commands} because they take effect immediately 
+and stay in effect until you explicitly turn them off or activate another one, 
+much like a light switch. As so, they do not take braced arguments, or indeed, 
+any arguments at all. Look at the following table.
+
+\begin{center}
+  \begin{tabular}{l}
+    Text Mode Switches                                                         \\
+    Use |\normalfont| to switch to the default normal font.               \\
+    \normalfont abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789
+    \normalfont                                                                \\
+    Use |\rmfamily| to switch to roman letters.                           \\
+    \rmfamily abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789
+    \normalfont                                                                \\
+    Use |\sffamily| to switch to sans serif latters.                      \\
+    \sffamily abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789
+    \normalfont                                                                \\
+    Use |\ttfamily| to switch to typewriter letters.                      \\
+    \ttfamily abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789
+    \normalfont                                                                \\
+    Use |\mdseries| to switch to medium letters.                          \\
+    \mdseries abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789
+    \normalfont                                                                \\
+    Use |\bfseries| to switch to boldface letters.                        \\
+    \bfseries abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789
+    \normalfont                                                                \\
+    Use |\upshape| to switch to upright letters.                          \\
+    \upshape abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789
+    \normalfont                                                                \\
+    Use |\itshape| to switch to italic letters.                           \\
+    \itshape abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789
+    \normalfont                                                                \\
+    Use |\slshape| to switch to slanted letters.                          \\
+    \slshape abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789
+    \normalfont                                                                \\
+    Use |\scshape| to switch to small capital letters.                    \\
+    \scshape abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789
+    \normalfont                                                                \\
+  \end{tabular}
+\end{center}
+
+To illustrate how these switches work, the following unindented paragraph is in the 
+default text font (it's just filler text). 
+
+\noindent Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis egestas urna 
+et dolor posuere, accumsan faucibus justo viverra. Pellentesque libero neque, maximus 
+vitae placerat eu, luctus sit amet sapien. Class aptent taciti sociosqu ad litora 
+torquent per conubia nostra, per inceptos himenaeos. Aenean vel nisl massa. Sed id 
+velit tellus. Vivamus eu elit a erat aliquam auctor nec sed mi. Orci varius natoque 
+penatibus et magnis dis parturient montes, nascetur ridiculus mus. Cras ut consequat 
+purus. Fusce imperdiet scelerisque sagittis. Etiam maximus sagittis sapien. Proin mi 
+metus, cursus a ex eget, maximus laoreet sapien. In hac habitasse platea dictumst. 
+Morbi eget est dui. Cras posuere nisl quis leo facilisis, vel viverra augue sagittis. 
+Nullam posuere, ex id efficitur mollis, velit nisi tincidunt augue, vel tempor orci 
+nisi a justo.
+
+The following unindented paragraph is the same filler text, but now preceded by the 
+|\sffamily| switch.
+
+\sffamily
+\noindent Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis egestas urna 
+et dolor posuere, accumsan faucibus justo viverra. Pellentesque libero neque, maximus 
+vitae placerat eu, luctus sit amet sapien. Class aptent taciti sociosqu ad litora 
+torquent per conubia nostra, per inceptos himenaeos. Aenean vel nisl massa. Sed id 
+velit tellus. Vivamus eu elit a erat aliquam auctor nec sed mi. Orci varius natoque 
+penatibus et magnis dis parturient montes, nascetur ridiculus mus. Cras ut consequat 
+purus. Fusce imperdiet scelerisque sagittis. Etiam maximus sagittis sapien. Proin mi 
+metus, cursus a ex eget, maximus laoreet sapien. In hac habitasse platea dictumst. 
+Morbi eget est dui. Cras posuere nisl quis leo facilisis, vel viverra augue sagittis. 
+Nullam posuere, ex id efficitur mollis, velit nisi tincidunt augue, vel tempor orci 
+nisi a justo. 
+
+Note that this (the current) paragraph is still typeset in sans serif letters because 
+the |\sffamily| switch is still activated. We can deactivate it by activating 
+another switch, like |\normalfont| \normalfont to get back to normal default 
+text, or like |\bfseries| \bfseries to get bold letters, or even like 
+|\itshape| \itshape to get italic letters. Note that we got both bold and italic 
+letters in that last phrase, and in this sentence, because the |\bfseries| switch 
+was still activated when we activated the |\itshape| switch. Activated switches 
+can accumulate to give us new combinations of letter styles and shapes. We can return 
+to the normal default font by activating the |\normalfont| switch \normalfont 
+just like this. Now everything is back to normal.
+
+\subsection{Math Mode Fonts}
+Now we need to discuss math mode fonts, which are considerably more complicated than 
+text mode fonts. There are math mode font \emph{commands}, but there are no math mode 
+font \emph{switches}. Math mode fonts sometimes include lowercase and/or uppercase 
+Greek letters, which are frequently used in mathematical notation. Math mode fonts 
+go into effect whenever you enter in-line math mode with |\(...\)| or display 
+math mode with |\[...\]|. Many \LaTeX\ tutorials use |$...$| for in-line 
+math mode and |$$...$$| for display math mode. For various technical reasons, 
+these are not recommended so please do not use them. Please consistently use 
+|\(...\)| for in-line math mode and |\[...\]| for display math mode.
+
+\subsubsection{Unicode Math Mode Font Commands}
+In math mode, we use the 
+\href{https://www.ctan.org/pkg/unicode-math}{\normalfont\ttfamily\normalfont\ttfamily unicode-math} 
+package to create new font combinations 
+that allow for greater flexibility than otherwise available. There is a tradeoff, and 
+that is documents must be processed with the \lualatex\ engine. The math mode 
+\verb|unicode| font commands available to you in this habitat are given in the following 
+table. Note that all of these commands begin with |\sym<...>|. You may assume that 
+characters not shown are not supported.
+\begin{center}
+  \begin{tabular}{l}
+    |\(...\)| or |\[...\]| or |\symnormal{...}| give the default math mode font. 
+    Use this for vector index notation. \\
+    \( abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 \) \\
+    \( 
+      \alpha\beta\gamma\delta\epsilon\varepsilon\zeta\eta\theta\vartheta\iota\kappa
+      \lambda\mu\nu\xi\omicron\pi\varpi\rho\varrho\sigma\varsigma\tau\upsilon\phi\varphi
+      \chi\psi\omega\Delta\Gamma\Theta\Lambda\Xi\Pi\Sigma\Upsilon\Phi\Psi\Omega 
+    \) \\
+    |\symbf{...}| gives boldface italic. Use this for coordinate-free 
+    vectors and matrices. \\
+    \( \symbf{abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ} \) \\
+    \( \symbf{ 
+       \alpha\beta\gamma\delta\epsilon\varepsilon\zeta\eta\theta\vartheta\iota\kappa
+       \lambda\mu\nu\xi\omicron\pi\varpi\rho\varrho\sigma\varsigma\tau\upsilon\phi\varphi
+       \chi\psi\omega\Delta\Gamma\Theta\Lambda\Xi\Pi\Sigma\Upsilon\Phi\Psi\Omega}
+    \) \\
+    |\symup{...}| gives upright (roman) serif. Use this to name particles.
+    |\symup{\Omega}| (\(\symup{\Omega}\)) represents the ohm. \\
+    \( \symup{abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789} \) \\
+    \( \symup{ 
+      \alpha\beta\gamma\delta\epsilon\varepsilon\zeta\eta\theta\vartheta\iota\kappa
+      \lambda\mu\nu\xi\omicron\pi\varpi\rho\varrho\sigma\varsigma\tau\upsilon\phi\varphi
+      \chi\psi\omega\Delta\Gamma\Theta\Lambda\Xi\Pi\Sigma\Upsilon\Phi\Psi\Omega}
+    \) \\
+    |\symbfup{...}| gives boldface upright serif. \\
+    \( \symbfup{abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789} \) \\
+    \( \symbfup{ 
+       \alpha\beta\gamma\delta\epsilon\varepsilon\zeta\eta\theta\vartheta\iota\kappa
+       \lambda\mu\nu\xi\omicron\pi\varpi\rho\varrho\sigma\varsigma\tau\upsilon\phi\varphi
+       \chi\psi\omega\Delta\Gamma\Theta\Lambda\Xi\Pi\Sigma\Upsilon\Phi\Psi\Omega}
+    \) \\
+    |\symsfup{...}| gives sans serif upright. Use this for physical dimensions. \\
+    \( \symsfup{abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789} \) \\
+    |\symbfsfup{...}| gives boldface sans serif upright. \\
+    \( \symbfsfup{abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789} \) \\
+    \( \symbfsfup{ 
+       \alpha\beta\gamma\delta\epsilon\varepsilon\zeta\eta\theta\vartheta\iota\kappa
+       \lambda\mu\nu\xi\omicron\pi\varpi\rho\varrho\sigma\varsigma\tau\upsilon\phi\varphi
+       \chi\psi\omega\Delta\Gamma\Theta\Lambda\Xi\Pi\Sigma\Upsilon\Phi\Psi\Omega}
+    \) \\
+    |\symsfit{...}| gives sans serif italic. Use this for tensor index notation. \\
+    \( \symsfit{abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ} \) \\
+    |\symbfsfit{...}| gives boldface sans serif italic. Use this for 
+    coordinate-free tensors.  \\
+    \( \symbfsfit{abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ} \) \\
+    |\symcal{...}| and|\symbfcal{...}| give calligraphic. Use these for 
+    points on a manifold or \\
+    naming coordinate systems. \\
+    \( \symcal{ABCDEFGHIJKLMNOPQRSTUVWXYZ} \) \\
+    \( \symbfcal{ABCDEFGHIJKLMNOPQRSTUVWXYZ} \) \\
+    |\symscr{...}| and |\symbfscr{...}| give script. Use these for
+    naming spacetime events. \\
+    \( \symscr{abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ} \) \\
+    \( \symbfscr{abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ} \) \\
+    |\symtt{...}| gives typewriter. \\
+    \( \symtt{abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789} \) \\
+    |\symfrak{...}| and |\symbffrak{...}| give Fraktur. \\
+    \( \symfrak{abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ} \) \\
+    \( \symbffrak{abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ} \) \\
+    |\symbb{...}| gives blackboard. \\
+    \( \symbb{abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789} \) \\
+    |\symbbit{...}| gives blackboard italic. I have no idea why it's defined for only 
+    five letters.\\
+    \( \symbbit{deijD} \) \\
+  \end{tabular}
+\end{center}
+The zero vector is |\symbfup{0}| or \(\symbfup{0}\). It is aliased as |\zerovector|, 
+which also gives \(\zerovector\). As you can see, many more characters are available 
+using the |unicode| commands. Also, notice the semantic naming of each typeface and style.
+
+\subsubsection{A Few More Mathematical Symbols}
+There's a handful of other mathematical symbols you will need, and here they are. Don't worry 
+if you've never seen any or all of these before. The third row of symbols is unique to \mandi.
+\begin{center}
+  \begin{tabular}{l}
+    \(\nabla\,\mdlgwhtsquare\,\partial\,\otimes\,\times\,\cdot\,\bullet\) \\
+    \(\symbf{\nabla}\,\symbf{\partial}\) \\
+    \(\nabla\indices{_{\veccomp{u}}}\,\nabla\indices{_{\tencomp{u}}}\) \\
+    \(\slot\,\slot*[\veccomp{a}]\,\contraction{(1,2)}\,\contraction{(1,3)(2,4)}\,
+      \contraction*{(1,2)}\,\contraction*{(1,3)(2,4)}\) \\
+  \end{tabular}
+\end{center}
+
+\subsubsection{Unicode Input}
+With Unicode support, you can use characters direction from your keyboard. The following
+example of Maxwell's equations uses keyboard characters typed directly. 
+\begin{gather*}
+  ∇∙𝑬=\frac{𝜌}{𝜀_o} \\
+    ∇∙𝑩=0 \\
+    ∇×𝑬=−\frac{∂𝑩}{∂𝑡} \\
+    ∇×𝑩=𝜇_o \biggl(I + 𝜀_o \frac{∂𝑬}{∂𝑡}\biggr)
+\end{gather*}
+
+There is an intelligent exterior derivative operator. 
+\[
+  \dd*\omega
+\]
+% Back to wider margins.
+\restoregeometry
+
+\section{The Unit Engine}
+The seven fundamental SI quantities are displacement (\displacement{3}), time (\duration{3}),
+electric current (\current{1.2}), thermodynamic temperature (\temperature{3}), 
+amount (\amount{4}), and luminous intensity (\luminous{2}). Momentum (\momentum{4}) is a very 
+important quantity.
+
+\hereusealternativeunit{\momentum{4}}
+
+\section{Column and Row Vectors}
+\subsection{Column Vectors}
+\[
+  \colvec{0,1,2,3}\colvec{\tencomp*{a}_1,\tencomp*{a}_2,\tencomp*{a}_2}
+\]
+\subsection{Row Vectors}
+\[
+  \rowvec{0,1,2,3}\rowvec{\tencomp*{a}_1,\tencomp*{a}_2,\tencomp*{a}_2}
+\]
+
+\section{Symbolic Vectors}
+\subsection{Notation Conventions}
+Typesetting symbolic vectors is ubiquitous in in physics, yet most sources are not consistent in
+notation compared to other sources. Using arrows to denote vector quantities, as with |\vec*{p}|
+(note the |*|), which gives \vec*{p}, seems the standard in introductory physics courses, but 
+this isn't seen in higher level resources, and certainly not in published articles. The standard, 
+which doesn't seem to be observed, is that vectors are typeset in boldface italic, as with 
+|\vec{p}|, which gives \vec{p}. Physics teachers know students struggle with using arrows to
+denote vector quantities, and most students never correctly learn it. After all, why should they learn 
+something that isn't used consistently, or even at all? There is really just one practical reason 
+for using arrows rather than boldface, and that is the quaint notion of writing on a whiteboard (or a 
+chalkboard if anyone remembers those). We really should move with the times and enforce the professional 
+convention for our students. So in \mandi\ we do exactly this, but allow flexibility in notation for 
+those who insist upon having it. By default, the standard \LaTeX\ |\vec{...}| command is redefined
+to, by default, typeset symbols for vector quantities in boldface italic. The starred form of the
+command, |\vec*{...}|, typesets them with arrows. Note that getting arrow notation is a bit
+more difficult (because you must type the |*|) than the default boldface italic notation, and
+this is a subtle psychological tactic on my part; the new notation takes less effort.
+
+\subsection{Symbolic Notation}
+The command |\dirvect{...}| typesets the symbol for a vector's direction.
+|\dirvect{r}| gives \( \dirvect{r} \) and as you might expect by now |\dirvect*{r}|
+gives \( \dirvect*{r} \). A vector's magnitude is typeset with |\norm{...}|. As you may
+predict, |\norm{\vec{r}}| gives \( \norm{\vec{r}} \) and |\norm{\vec*{r}}| gives 
+\( \norm{\vec*{r}} \). Any vector can be \emph{factored} into its magnitude and direction. So
+\( \vec{p} = \norm{\vec{p}}\dirvect{p} \) or \( \vec*{p} = \norm{\vec*{p}}\dirvect*{p} \).
+
+The command |\magvect{...}| typesets the symbol for a vector's magnitude.
+|\magvect{r}| gives \( \magvect{r} \) and of course |\magvect*{r}| gives
+\( \magvect*{r} \).
+
+Finally, the command |\Dvect{...}| typesets the symbol for the change in a vector. |\Dvect{r}|
+gives \( \Dvect{r} \). For arrow notation, use the starred form. |\Dvect*{r}| gives
+\( \Dvect*{r} \). 
+
+\subsection{Embellishments}
+Again, I state that notation should help the reader and for physics students, unambiguously help 
+guide one's thinking. This frequently requires use of embellishments, or additions to basic notation.
+For example, consider a rock moving through space. One can speak of the rock's momentum, and 
+notate it as |\vec{p}_{rock}|, which gives 
+\[
+\vec{p}_{rock}
+\]
+as predicted. But wait, the subscript doesn't look right. It is typeset in italic when it shouldn't 
+be. So instead, we write |\vec{p}_{\mathup{rock}}|, which gives 
+\[
+\vec{p}_{\mathup{rock}}
+\]
+which looks much better. Why does this make a difference? The answer is that the |\vec{...}| 
+command internally takes place in \emph{math mode}, which means all characters are, by default, typeset 
+in italic. Words are not intended to be written in math mode. So if we want to typeset an actual piece 
+of text, you must mark it up as such using a |\mathup{...}| command.
+
+So now you can correctly typeset an initial momentum and final momentum symbolically as \newline
+|\vec{p}_{\mathup{initial}}| and |\vec{p}_{\mathup{final}}|, which
+give
+\[
+\vec{p}_{\mathup{initial}} \text{ and } \vec{p}_{\mathup{final}}
+\]
+exactly as expected. If you want something other than actual text as a subscript, just supply it 
+without additional markup. So you could write, for example, |\vec{p}_{1}| and get
+\[
+\vec{p}_{1}
+\]
+as expected. The braces around the subscript are strictly not required if the subscript is just one
+character, but it is a good habit to write them all the time, so I do.
+
+You can add superscripts just as easily as you can add subscripts, using a caret (|^|) to 
+denote the superscript. Writing |\vec{p}^{\mathup{rock}}| gives
+\[
+\vec{p}^{\mathup{rock}}
+\]
+just like that. All the comments about subscripts above apply to superscripts. The best part is
+that you can effortlessly mix subscripts and superscripts. Writing \newline
+|\vec{p}_{\mathup{final}}^{\mathup{rock}}| or \newline
+|\vec{p}^{\mathup{rock}}_{\mathup{final}}| gives
+\[
+\vec{p}_{\mathup{final}}^{\mathup{rock}} \text{ and } \vec{p}^{\mathup{rock}}_{\mathup{final}}
+\]
+and note that the order of the flourishes doesn't matter. The underlying \LaTeX3\ programming 
+layer makes this almost trivial to implement in \mandi\ now. Using text to embellish a symbolic
+vector takes a bit more effort, which is a subtle warning to use it sparingly. Simply changing
+|\vec{...}| to |\vec*{...}| gives the same results with arrow notation and gives
+\[
+\vec*{p}_{\mathup{final}}^{\mathup{rock}} \text{ and } \vec*{p}^{\mathup{rock}}_{\mathup{final}}
+\]
+as expected.
+
+\begin{center}
+\bfseries It is very important to always that when in math mode, always, without exception, wrap words 
+used in subscripts and superscripts in |\mathup{...}|. This does not apply to mathematical symbols,
+only to actual words or any text that is not mathematical notation.\normalfont
+\end{center}
+
+Of course you can mix mathematical notation and text in the flourishes. As an example, one could
+represent an alpha particle's final momentum by writing \newline
+|\vec{p}_{\symup{\alpha},\mathup{final}}| which typesets as
+\[
+\vec{p}_{\symup{\alpha},\mathup{final}}
+\]
+as beautifully as expected. If you want arrow notation, you would write \newline
+|\vec*{p}_{\symup{\alpha},\mathup{final}}| which typesets as
+\[
+\vec*{p}_{\symup{\alpha},\mathup{final}}
+\]
+as expected. For many reasons, I think the boldface notation looks better. Finally, note that
+|\symup{...}| is used here since upright Greek letters are used to name subatomic particles.
+
+\[
+  \norm*{\vec{p}_{\mathup{final}}} \qquad \pens*{\frac{1}{4\pi\varepsilon_o}}
+\]
+\begin{align}
+  \Delta\vec{r}  &= \vec{r}_{\mathup{final}} - \vec{r}_{\mathup{initial}} \reason{definition} \\
+  \Delta\vec*{r} &= \vec*{r}_{\mathup{final}} - \vec*{r}_{\mathup{initial}} 
+    \reason{\lipsum[2][2-4]} \\
+  \Delta\vec{r}  &= \vec{r}_{\mathup{final}} - \vec{r}_{\mathup{initial}} \reason{definition} \\
+  \Delta\vec{r}  &= \vec{r}_{\mathup{final}} - \vec{r}_{\mathup{initial}} \reason{definition} \\
+  \norm{\vec{r}} &= \sqrt{\vec{r}\cdot\vec{r}}
+\end{align}
+
+\begin{gather*}
+\inpens[\frac{1}{4\pi\epsilon_o}] \qquad \inpens \\
+\indims[\frac{1}{4\pi\epsilon_o}] \qquad \indims \\
+\inabsv[\frac{1}{4\pi\epsilon_o}] \qquad \inabsv \\
+\innorm[\frac{1}{4\pi\epsilon_o}] \qquad \innorm \\
+\pens*{\frac{1}{4\pi\epsilon_o}}  \qquad \pens{} \\
+\dims*{\frac{1}{4\pi\epsilon_o}}  \qquad \dims{} \\
+\absv*{\frac{1}{4\pi\epsilon_o}}  \qquad \absv{} \\
+\norm*{\frac{1}{4\pi\epsilon_o}}  \qquad \norm{} \\
+\end{gather*}
+
+\subsection{Coordinate-Free Notation}
+The arrow notation used in introductory physics is a compromise between a notation that ostensibly
+helps students remember the quantity in question had an associate direction and a notation that
+is easily reproducible by hand on a whiteboard. As hard as we try, students rarely use arrow
+notation for vectors correctly, if at all. You don't find arrow notation for vectors much at 
+all in the literature outside of introductory textbooks. Most sources use boldface, and while 
+that is harder to use on a whiteboard, it's trivial to do in \LaTeX\ so why not adopt it as
+the expectation?
+
+Use the |\veccomp{...}| command to get coordinate-free notation for vectors. |\veccomp{p}| 
+gives \veccomp{p}. This notation isn't intended to be used with embellishments, but it can be done 
+as long as you are in math mode.
+
+\subsection{Index Notation}
+Use the |\veccomp*{...}| command to get index notation for vectors. |\veccomp*{p}|
+gives \veccomp*{p}. Where is the index? You have to supply it using the |\indices{...}|
+command from the 
+\href{https://www.ctan.org/pkg/tensor}{\normalfont\ttfamily tensor} 
+package, which \mandi\ loads for you. So to get the symbol for momentum in index notation you would 
+use |\veccomp*{p}\indices{^i}| which gives \( \veccomp*{p}\indices{^i} \). Now, you may realize that 
+|\veccomp*{p}^i| gives the same result, and it does indeed give \( \veccomp*{p}^i \) as expected, so 
+why bother with the |\indices{...}| command? The answer is that the |\indices{...}| command plays an 
+important role in tensor index notation, which includes vector index notation, and you need to be 
+comfortable  using it. Use |\veccomp{e}| to get a basis vector, which gives \veccomp{e} as expected. 
+Basis vectors must be labeled, and I recommend using the |indices{...}| command, but both
+|\veccomp{e}\indices{_i}| and |\veccomp{e}_i| give the same result, 
+\( \veccomp{e}\indices{_i} \) as expected. So to get the full symbol for a vector in a particular
+basis you would use |\veccomp*{p}_i\veccomp{e}^i| or 
+|\veccomp*{p}\indices{^i}\veccomp{e}\indices{_i}|, both of which give 
+\( \veccomp*{p}\indices{^i}\veccomp{e}\indices{_i} \).
+
+\section{Highlighting Mathematics}
+A new feature to \mandi\ is a command for highlighting mathematics.
+\begin{align*}
+  (\Delta s)^2 &= -(\Delta t)^2 + (\Delta x)^2 + (\Delta y)^2 + (\Delta z)^2 \\
+  (\Delta s)^2 &= \hilite{-(\Delta t)^2 + (\Delta x)^2}[rounded rectangle] + (\Delta y)^2 + (\Delta z)^2 \\
+  (\Delta s)^2 &= \hilite{-(\Delta t)^2 + (\Delta x)^2}[rectangle] + (\Delta y)^2 + (\Delta z)^2 \\
+  (\Delta s)^2 &= \hilite{-(\Delta t)^2 + (\Delta x)^2}[ellipse] + (\Delta y)^2 + (\Delta z)^2 \\
+  (\Delta s)^{\hilite{2}[circle]} &= \hilite[green]{-}[circle](\Delta t)^{\hilite[cyan]{2}[circle]}+
+    (\Delta x)^{\hilite[orange]{2}[circle]} + (\Delta y)^{\hilite[blue!50]{2}[circle]} +
+    (\Delta z)^{\hilite[violet!45]{2}[circle]}
+\end{align*}
+Here is another example.
+\begin{align*}
+  \Delta\mathbf{p} &= \mathbf{F}_{\mathup{net,sys}}\,\Delta t \\
+  \hilite[orange]{\Delta\mathbf{p}}[circle] &= \mathbf{F}_{\mathup{net,sys}}\,\Delta t \\
+  \Delta\mathbf{p} &= \hilite[yellow!50]{\mathbf{F}_{\mathup{net,sys}}}[rounded rectangle]\,\Delta t \\
+  \Delta\mathbf{p} &= \mathbf{F}_{\mathup{net,sys}}\,\hilite[olive!50]{\Delta t}[rectangle] \\
+  \Delta\mathbf{p} &= \hilite[cyan!50]{\mathbf{F}_{\mathup{net,sys}}\,\Delta t}[ellipse] \\
+  \hilite{\Delta\mathbf{p}}[rectangle] &= \mathbf{F}_{\mathup{net,sys}}\,\Delta t
+\end{align*}
+
+Highlighting also works in in-line math mode like \( a^2 + \hilite{b^2}[circle] = c^2 \).
+
+\section{Tensor Notation}
+A tensor has a valence \valence{m}{n} by definition. A vector is a \valence{1}{0} tensor and a
+one-form is a \valence{0}{1} tensor.
+
+\section{\GlowScript\ and \VPython\ Program Listings}
+\subsection{The \texttt{glowscriptblock} Environment}
+\GlowScript\ program listings are improved and look better. Clicking anywhere on the actual 
+code takes the reader to the relevant source code on \href{https://www.glowscript.org}{GlowScript.org}
+for read-only access using the URL provided by the user. To minimize the chances of a program being 
+broken over a pagebreak, each listing begins on a new page. This is a big change from the previous 
+version of \mandi\ and may be annoying for small programs, but I think the clarity of beginning a
+new listing on a new page is important.
+
+\begin{glowscriptblock}[https://google.com]{A \GlowScript\ program.}{pref1}
+GlowScript 3.0 VPython
+
+scene.width = 400
+scene.height = 760
+# constants and data
+g = 9.8       # m/s^2
+mball = 0.03  # kg
+Lo = 0.26     # m
+ks = 1.8      # N/m
+deltat = 0.01 #s 
+
+# objects (origin is at ceiling)
+ceiling = box(pos=vector(0,0,0), length=0.2, height=0.01, width=0.2)
+ball = sphere(pos=vector(0,-0.3,0),radius=0.025,color=color.orange)
+spring = helix(pos=ceiling.pos, axis=ball.pos-ceiling.pos,
+         color=color.cyan,thickness=0.003,coils=40,radius=0.010)
+
+# initial values
+pball = mball * vector(0,0,0)      # kg m/s
+Fgrav = mball * g * vector(0,-1,0) # N
+t = 0
+
+# improve the display
+scene.autoscale = False        # turn off automatic camera zoom
+scene.center = vector(0,-Lo,0) # move camera down
+scene.waitfor('click')         # wait for a mouse click
+
+# initial calculation loop
+# calculation loop
+#while t < 10:
+#    rate(100)
+#    Fnet = Fgrav
+#    pball = pball + Fnet * deltat
+#    ball.pos = ball.pos + (pball / mball) * deltat
+#    spring.axis = ball.pos - ceiling.pos
+#    t = t + deltat
+    
+# modified initial calculation loop
+# calculation loop
+while t < 10:
+    rate(100)
+    # we need the stretch
+    s = mag(ball.pos) - Lo
+    # we need the spring force
+    Fspring = ks * s * -norm(spring.axis)
+    Fnet = Fgrav + Fspring
+    pball = pball + Fnet * deltat
+    ball.pos = ball.pos + (pball / mball) * deltat
+    spring.axis = ball.pos - ceiling.pos
+    t = t + deltat
+\end{glowscriptblock}
+
+nameref-link to listing: \nameref{pref1}
+
+ref-link to listing: \ref{pref1}
+
+pageref-link to listing: \pageref{pref1}
+
+autoref-link to listing: \autoref{pref1}
+
+It may be annoying for a small program listing like this, but again, I think the clarity is 
+important, especially for beginners. 
+
+\begin{glowscriptblock}[https://google.com]{79 Columns}{pref100}
+1234567890123456789012345678901234567890123456789012345678901234567890123456789
+1234567890123456789012345678901234567890123456789012345678901234567890123456789
+\end{glowscriptblock}
+
+nameref-link to listing: \nameref{pref100}
+
+ref-link to listing: \ref{pref100}
+
+pageref-link to listing: \pageref{pref100}
+
+autoref-link to listing: \autoref{pref100}
+
+\subsection{The \texttt{glowscriptblock} Environment With \VPython\ Programs}
+\href{https://vpython.org}{\VPython} programs are also nicely formatted but lack the hyperlink capability
+because they live on the user's local computer and not online. Since the |glowscriptblock| environment 
+turns the code into a hyperlink, it makes no sense semantically to use this environment for \VPython\ 
+programs. Still, it is sometimes helpful to show a block of code this way without turning the code into 
+a hyperlink. Use |glowscriptblock| without the optional argument to typeset a block of \VPython\ code. 
+|\begin{glowscriptblock}{A \VPython\ program}{pref2}| gives
+
+\begin{glowscriptblock}{A \VPython\ program}{pref2}
+from vpython import *
+
+scene.width = 400
+scene.height = 760
+# constants and data
+g = 9.8       # m/s^2
+mball = 0.03  # kg
+Lo = 0.26     # m
+ks = 1.8      # N/m
+deltat = 0.01 #s 
+
+# objects (origin is at ceiling)
+ceiling = box(pos=vector(0,0,0), length=0.2, height=0.01, width=0.2)
+ball = sphere(pos=vector(0,-0.3,0),radius=0.025,color=color.orange)
+spring = helix(pos=ceiling.pos, axis=ball.pos-ceiling.pos,
+         color=color.cyan,thickness=0.003,coils=40,radius=0.010)
+
+# initial values
+pball = mball * vector(0,0,0)      # kg m/s
+Fgrav = mball * g * vector(0,-1,0) # N
+t = 0
+
+# improve the display
+scene.autoscale = False        # turn off automatic camera zoom
+scene.center = vector(0,-Lo,0) # move camera down
+scene.waitfor('click')         # wait for a mouse click
+
+# initial calculation loop
+# calculation loop
+#while t < 10:
+#    rate(100)
+#    Fnet = Fgrav
+#    pball = pball + Fnet * deltat
+#    ball.pos = ball.pos + (pball / mball) * deltat
+#    spring.axis = ball.pos - ceiling.pos
+#    t = t + deltat
+    
+# modified initial calculation loop
+# calculation loop
+while t < 10:
+    rate(100)
+    # we need the stretch
+    s = mag(ball.pos) - Lo
+    # we need the spring force
+    Fspring = ks * s * -norm(spring.axis)
+    Fnet = Fgrav + Fspring
+    pball = pball + Fnet * deltat
+    ball.pos = ball.pos + (pball / mball) * deltat
+    spring.axis = ball.pos - ceiling.pos
+    t = t + deltat
+\end{glowscriptblock}
+
+nameref-link to listing: \nameref{pref2}
+
+ref-link to listing: \ref{pref2}
+
+pageref-link to listing: \pageref{pref2}
+
+autoref-link to listing: \autoref{pref2}
+
+\subsection{In-line \GlowScript\ and \VPython\ Code}
+In-line code can be included as before using |\glowscriptline{...}| or 
+|\vpythonline{...}|, depending on which is semantically appropriate. Using \newline
+|\glowscriptline{Earth = sphere(color=color.blue)}| gives \newline
+\glowscriptline{Earth = sphere(pos=vector(1,1,1),radius=2,color=color.blue)} and \newline
+|\vpythonline{Sun = sphere(pos=vector(1,1,1),radius=2,color=color.yellow)}| gives \newline
+\vpythonline{Sun = sphere(pos=vector(1,1,1),radius=2,color=color.yellow)}.
+
+\subsection{Including a \VPython\ File}
+A \VPython\ file can be included using |\vpythonfile{...}{...}{...}|. The file 
+should be in the same folder as the document being typeset, and a caption and a reference 
+label must be provided. Again, the typeset listing begins on a new page.
+
+\vpythonfile{Sample Program}{vlabel1}{MyProgram.py}
+
+nameref-link to listing: \nameref{vlabel1}
+
+ref-link to listing: \ref{vlabel1}
+
+pageref-link to listing: \pageref{vlabel1}
+
+autoref-link to listing: \autoref{vlabel1}
+
+\section{Commands Specific to \emph{Matter \& Interactions}}
+These commands are defined in an optional accessory package called \mandiexp. That package's name 
+is subject to change.
+\begin{align*}
+ &\momentumprinciple         \reason{momentum principle}                      \\
+ &\momentumprinciple*        \reason{momentum principle, update form}         \\
+ &\energyprinciple           \reason{energy principle}                        \\
+ &\energyprinciple*          \reason{energy principle, update form}           \\
+ &\angularmomentumprinciple  \reason{angular momentum principle}              \\
+ &\angularmomentumprinciple* \reason{angular momentum principle, update form}               
+\end{align*}
+\begin{gather*}
+  \systemenergy   \quad\systemenergy[\symup{final}]   \quad\systemenergy[\symup{initial}]
+    \quad\changein\systemenergy \\
+  \particleenergy \quad\particleenergy[\symup{final}] \quad\particleenergy[\symup{initial}] 
+    \quad\changein\particleenergy \\
+  \restenergy     \quad\restenergy[\symup{final}]     \quad\restenergy[\symup{initial}]     
+    \quad\changein\restenergy \\
+  \internalenergy \quad\internalenergy[\symup{final}] \quad\internalenergy[\symup{initial}] 
+    \quad\changein\internalenergy \\
+  \chemicalenergy \quad\chemicalenergy[\symup{final}] \quad\chemicalenergy[\symup{initial}] 
+    \quad\changein\chemicalenergy \\
+  \thermalenergy  \quad\thermalenergy[\symup{final}]  \quad\thermalenergy[\symup{initial}]  
+    \quad\changein\thermalenergy \\
+  \photonenergy   \quad\photonenergy[\symup{final}]   \quad\photonenergy[\symup{initial}]   
+    \quad\changein\photonenergy \\
+  \energyof{\symup{electron}}
+    \quad\energyof{\symup{electron}}[\symup{final}]
+    \quad\energyof{\symup{electron}}[\symup{initial}] 
+    \quad\changein\energyof{\symup{electron}} \\
+  \energyof{\symup{\beta}}
+    \quad\energyof{\symup{\beta}}[\symup{final}]
+    \quad\energyof{\symup{\beta}}[\symup{initial}] 
+    \quad\changein\energyof{\symup{\beta}} \\
+  \translationalkineticenergy  \quad\translationalkineticenergy[\symup{final}] 
+    \quad\translationalkineticenergy[\symup{initial}] \quad\changein\translationalkineticenergy \\
+  \translationalkineticenergy* \quad\translationalkineticenergy*[\symup{final}] 
+    \quad\translationalkineticenergy*[\symup{initial}] \quad\changein\translationalkineticenergy* \\
+  \rotationalkineticenergy     \quad\rotationalkineticenergy[\symup{final}] 
+    \quad\rotationalkineticenergy[\symup{initial}] \quad\changein\rotationalkineticenergy \\
+  \rotationalkineticenergy*    \quad\rotationalkineticenergy*[\symup{final}] 
+    \quad\rotationalkineticenergy*[\symup{initial}] \quad\changein\rotationalkineticenergy* \\
+  \vibrationalkineticenergy    \quad\vibrationalkineticenergy[\symup{final}] 
+    \quad\vibrationalkineticenergy[\symup{initial}] \quad\changein\vibrationalkineticenergy \\
+  \vibrationalkineticenergy*   \quad\vibrationalkineticenergy*[\symup{final}] 
+    \quad\vibrationalkineticenergy*[\symup{initial}] \quad\changein\vibrationalkineticenergy* \\
+  \gravitationalpotentialenergy \quad\gravitationalpotentialenergy[\symup{final}] 
+    \quad\gravitationalpotentialenergy[\symup{initial}] \quad\changein\gravitationalpotentialenergy \\
+  \electricpotentialenergy \quad\electricpotentialenergy[\symup{final}] 
+    \quad\electricpotentialenergy[\symup{initial}] \quad\changein\electricpotentialenergy \\
+  \springpotentialenergy \quad\springpotentialenergy[\symup{final}] 
+    \quad\springpotentialenergy[\symup{initial}] \quad\changein\springpotentialenergy
+\end{gather*}
+These commands are intended to be semantically helpful.
+
+\end{document}
+
