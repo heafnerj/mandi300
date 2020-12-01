@@ -1,7 +1,7 @@
 % !TEX TS-program = lualatexmk
 % !TEX encoding = UTF-8 Unicode
 %
-% Minimal Template Version 20200722
+% Minimal Template Version 20201130
 %
 
 \documentclass{article}
@@ -12,17 +12,20 @@
 %\hypersetup{colorlinks=true} % colored links; no borders
 
 % These are for demon purposes.
-\usepackage{geometry}    % needed for changing margins
-\usepackage{lipsum}
+\usepackage{geometry}         % needed for changing margins
+\usepackage{lipsum}           % needed for dummy text
 
-\newcommand*{\mandi}{\texttt{mandi}}
-\newcommand*{\mandiexp}{\texttt{mandiexp}}
-\newcommand*{\GlowScript}{\texttt{GlowScript}}
-\newcommand*{\VPython}{\texttt{VPython}}
-\newcommand*{\lualatex}{Lua\LaTeX}
+% See https://tex.stackexchange.com/q/156383/218142
+\newcommand*{\pkg}[1]{\textsf{#1}}                    % typeset package names
+\newcommand*{\GlowScript}{\texttt{GlowScript}}        % typeset GlowScript
+\newcommand*{\GlowScriptorg}{\texttt{GlowScript.org}} % typeset GlowScript.org
+\newcommand*{\VPython}{\texttt{VPython}}              % typeset VPython
+\newcommand*{\VPythonorg}{\texttt{VPython.org}}       % typeset VPython.org
+\newcommand*{\lualatex}{Lua\LaTeX}                    % typeset LuaLaTeX
 
 % We need a new command for in-line listings to prevent overfull boxes.
 % Anything in |...| will be in small plain text.
+% Previously used !...! but that conflicts with colors.
 \lstMakeShortInline[basicstyle=\normalfont\ttfamily\small]|
 
 \begin{document}
@@ -34,7 +37,7 @@
 % Remember \newgeometry forces a page break.
 \newgeometry{left=0.5in,right=0.5in}
 This is the new 
-\href{https://www.ctan.org/pkg/mandi}{\normalfont\ttfamily\small mandi} 
+\href{https://www.ctan.org/pkg/mandi}{\pkg{mandi}} 
 package (\mandiversion), which creates a habitat specifically for introductory physics students. 
 It provides consistent notation conventions that align with ISO 80000-2 recommendations. This document
 is a demonstration for the new package and should not be taken as official documentation. Features
@@ -122,16 +125,16 @@ emphasize a word. Use |\emph{vector}| to emphasize the word \emph{vector} or
 using a different document class. Let the document class do its work and you will 
 have fewer things to remember. 
 
-\subsubsection{Text Mode Font Switches}
-Next, let's look as the various text mode switches you can use. They are called 
-\emph{switches} rather than \emph{commands} because they take effect immediately 
-and stay in effect until you explicitly turn them off or activate another one, 
-much like a light switch. As so, they do not take braced arguments, or indeed, 
-any arguments at all. Look at the following table.
+\subsubsection{Text Modal Font Commands}
+Next, let's look as the various text modal commands you can use. I like to think
+of them as \emph{switches} rather than \emph{commands} because they take effect 
+immediately and stay in effect until you explicitly turn them off by activating 
+another one, much like a light switch. As so, they do not take braced arguments, 
+or indeed, any arguments at all. Look at the following table.
 
 \begin{center}
   \begin{tabular}{l}
-    Text Mode Switches                                                         \\
+    Text Modal Commands                                                        \\
     Use |\normalfont| to switch to the default normal font.               \\
     \normalfont abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789
     \normalfont                                                                \\
@@ -220,11 +223,11 @@ these are not recommended so please do not use them. Please consistently use
 
 \subsubsection{Unicode Math Mode Font Commands}
 In math mode, we use the 
-\href{https://www.ctan.org/pkg/unicode-math}{\normalfont\ttfamily\normalfont\ttfamily unicode-math} 
+\href{https://www.ctan.org/pkg/unicode-math}{\pkg{unicode-math}} 
 package to create new font combinations 
 that allow for greater flexibility than otherwise available. There is a tradeoff, and 
 that is documents must be processed with the \lualatex\ engine. The math mode 
-\verb|unicode| font commands available to you in this habitat are given in the following 
+Unicode font commands available to you in this habitat are given in the following 
 table. Note that all of these commands begin with |\sym<...>|. You may assume that 
 characters not shown are not supported.
 \begin{center}
@@ -297,11 +300,11 @@ characters not shown are not supported.
 \end{center}
 The zero vector is |\symbfup{0}| or \(\symbfup{0}\). It is aliased as |\zerovector|, 
 which also gives \(\zerovector\). As you can see, many more characters are available 
-using the |unicode| commands. Also, notice the semantic naming of each typeface and style.
+using the Unicode commands. Also, notice the semantic naming of each typeface and style.
 
 \subsubsection{A Few More Mathematical Symbols}
 There's a handful of other mathematical symbols you will need, and here they are. Don't worry 
-if you've never seen any or all of these before. The third row of symbols is unique to \mandi.
+if you've never seen any or all of these before. The third row of symbols is unique to \pkg{mandi}.
 \begin{center}
   \begin{tabular}{l}
     \(\nabla\,\mdlgwhtsquare\,\partial\,\otimes\,\times\,\cdot\,\bullet\) \\
@@ -359,7 +362,7 @@ denote vector quantities, and most students never correctly learn it. After all,
 something that isn't used consistently, or even at all? There is really just one practical reason 
 for using arrows rather than boldface, and that is the quaint notion of writing on a whiteboard (or a 
 chalkboard if anyone remembers those). We really should move with the times and enforce the professional 
-convention for our students. So in \mandi\ we do exactly this, but allow flexibility in notation for 
+convention for our students. So in \pkg{mandi} we do exactly this, but allow flexibility in notation for 
 those who insist upon having it. By default, the standard \LaTeX\ |\vec{...}| command is redefined
 to, by default, typeset symbols for vector quantities in boldface italic. The starred form of the
 command, |\vec*{...}|, typesets them with arrows. Note that getting arrow notation is a bit
@@ -427,7 +430,7 @@ that you can effortlessly mix subscripts and superscripts. Writing \newline
 \vec{p}_{\mathup{final}}^{\mathup{rock}} \text{ and } \vec{p}^{\mathup{rock}}_{\mathup{final}}
 \]
 and note that the order of the flourishes doesn't matter. The underlying \LaTeX3\ programming 
-layer makes this almost trivial to implement in \mandi\ now. Using text to embellish a symbolic
+layer makes this almost trivial to implement in \pkg{mandi} now. Using text to embellish a symbolic
 vector takes a bit more effort, which is a subtle warning to use it sparingly. Simply changing
 |\vec{...}| to |\vec*{...}| gives the same results with arrow notation and gives
 \[
@@ -495,8 +498,8 @@ as long as you are in math mode.
 Use the |\veccomp*{...}| command to get index notation for vectors. |\veccomp*{p}|
 gives \veccomp*{p}. Where is the index? You have to supply it using the |\indices{...}|
 command from the 
-\href{https://www.ctan.org/pkg/tensor}{\normalfont\ttfamily tensor} 
-package, which \mandi\ loads for you. So to get the symbol for momentum in index notation you would 
+\href{https://www.ctan.org/pkg/tensor}{\pkg{tensor}} 
+package, which \pkg{mandi} loads for you. So to get the symbol for momentum in index notation you would 
 use |\veccomp*{p}\indices{^i}| which gives \( \veccomp*{p}\indices{^i} \). Now, you may realize that 
 |\veccomp*{p}^i| gives the same result, and it does indeed give \( \veccomp*{p}^i \) as expected, so 
 why bother with the |\indices{...}| command? The answer is that the |\indices{...}| command plays an 
@@ -510,7 +513,7 @@ basis you would use |\veccomp*{p}_i\veccomp{e}^i| or
 \( \veccomp*{p}\indices{^i}\veccomp{e}\indices{_i} \).
 
 \section{Highlighting Mathematics}
-A new feature to \mandi\ is a command for highlighting mathematics.
+A new feature to \pkg{mandi} is a command for highlighting mathematics.
 \begin{align*}
   (\Delta s)^2 &= -(\Delta t)^2 + (\Delta x)^2 + (\Delta y)^2 + (\Delta z)^2 \\
   (\Delta s)^2 &= \hilite{-(\Delta t)^2 + (\Delta x)^2}[rounded rectangle] + (\Delta y)^2 + (\Delta z)^2 \\
@@ -539,10 +542,10 @@ one-form is a \valence{0}{1} tensor.
 \section{\GlowScript\ and \VPython\ Program Listings}
 \subsection{The \texttt{glowscriptblock} Environment}
 \GlowScript\ program listings are improved and look better. Clicking anywhere on the actual 
-code takes the reader to the relevant source code on \href{https://www.glowscript.org}{GlowScript.org}
+code takes the reader to the relevant source code on \href{https://www.glowscript.org}{\GlowScriptorg}
 for read-only access using the URL provided by the user. To minimize the chances of a program being 
 broken over a pagebreak, each listing begins on a new page. This is a big change from the previous 
-version of \mandi\ and may be annoying for small programs, but I think the clarity of beginning a
+version of \pkg{mandi} and may be annoying for small programs, but I think the clarity of beginning a
 new listing on a new page is important.
 
 \begin{glowscriptblock}[https://google.com]{A \GlowScript\ program.}{pref1}
@@ -715,7 +718,7 @@ pageref-link to listing: \pageref{vlabel1}
 autoref-link to listing: \autoref{vlabel1}
 
 \section{Commands Specific to \emph{Matter \& Interactions}}
-These commands are defined in an optional accessory package called \mandiexp. That package's name 
+These commands are defined in an optional accessory package called \pkg{mandiexp}. That package's name 
 is subject to change.
 \begin{align*}
  &\momentumprinciple         \reason{momentum principle}                      \\
