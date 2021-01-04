@@ -6,10 +6,9 @@
 
 \documentclass{article}
 \usepackage{mandi300}         % main mandi package
-\mandisetup{}                 % mandi package options
 \usepackage{mandiexp300}      % expressions for M&I; optional
-\hypersetup{colorlinks=false} % borders around links
-%\hypersetup{colorlinks=true} % colored links; no borders
+%\hypersetup{colorlinks=false} % borders around links
+\hypersetup{colorlinks=true} % colored links; no borders
 
 % These are for demon purposes.
 \usepackage{geometry}         % needed for changing margins
@@ -316,8 +315,10 @@ if you've never seen any or all of these before. The third row of symbols is uni
 \end{center}
 
 \subsubsection{Unicode Input}
-With Unicode support, you can use characters direction from your keyboard. The following
-example of Maxwell's equations uses keyboard characters typed directly. 
+With Unicode support, you can use characters direction from your keyboard. It is important to
+remember that the glyphs (characters) you use must be present in the font you use for your
+document or they will not display correctly, if at all. The following example of Maxwell's 
+equations uses characters typed directly from the keyboard. 
 \begin{gather*}
   ∇∙𝑬=\frac{𝜌}{𝜀_o} \\
     ∇∙𝑩=0 \\
@@ -333,12 +334,115 @@ There is an intelligent exterior derivative operator.
 \restoregeometry
 
 \section{The Unit Engine}
-The seven fundamental SI quantities are displacement (\displacement{3}), time (\duration{3}),
-electric current (\current{1.2}), thermodynamic temperature (\temperature{3}), 
-amount (\amount{4}), and luminous intensity (\luminous{2}). Momentum (\momentum{4}) is a very 
-important quantity.
+The seven fundamental SI quantities are displacement (\displacement{3}), duration (\duration{3}),
+mass (\mass{3}), electric current (\current{3}), thermodynamic temperature (\temperature{3}), 
+amount (\amount{3}), and luminous intensity (\luminous{3}). 
 
+
+\hereusebaseunit{\momentum{4}},
+\hereusederivedunit{\momentum{4}},
 \hereusealternativeunit{\momentum{4}}
+
+\hereusebaseunit{\acceleration{4}},
+\hereusederivedunit{\acceleration{4}},
+\hereusealternativeunit{\acceleration{4}}
+
+\hereusebaseunit{\magneticfield{4}},
+\hereusederivedunit{\magneticfield{4}},
+\hereusealternativeunit{\magneticfield{4}}
+
+\begin{usebaseunit}
+  \momentum{4}, \acceleration{4}, \magneticfield{4}
+\end{usebaseunit}
+
+\begin{usederivedunit}
+  \momentum{4}, \acceleration{4}, \magneticfield{4}
+\end{usederivedunit}
+
+\begin{usealternativeunit}
+  \momentum{4}, \acceleration{4}, \magneticfield{4}
+\end{usealternativeunit}
+
+\momentumonlybaseunit, \momentumonlyderivedunit, \momentumonlyalternativeunit
+
+\chkquantity{acceleration}
+\chkquantity{amount}
+\chkquantity{angularvelocity}
+\chkquantity{angularacceleration}
+\chkquantity{angularfrequency}
+\chkquantity{angularimpulse}
+\chkquantity{angularmomentum}
+\chkquantity{area}
+\chkquantity{areamassdensity}
+\chkquantity{areachargedensity}
+\chkquantity{capacitance}
+\chkquantity{charge}
+\chkquantity{cmagneticfield}
+\chkquantity{conductance}
+\chkquantity{conductivity}
+\chkquantity{conventionalcurrent}
+\chkquantity{current}
+\chkquantity{currentdensity}
+\chkquantity{dielectricconstant}
+\chkquantity{displacement}
+\chkquantity{duration}
+\chkquantity{electricdipolemoment}
+\chkquantity{electricfield}
+\chkquantity{electricflux}
+\chkquantity{electricpotential}
+\chkquantity{electroncurrent}
+\chkquantity{emf}
+\chkquantity{energy}
+\chkquantity{energydensity}
+\chkquantity{energyflux}
+\chkquantity{entropy}
+\chkquantity{frequency}
+\chkquantity{force}
+\chkquantity{gravitationalfield}
+\chkquantity{gravitationalpotential}
+\chkquantity{impulse}
+\chkquantity{indexofrefraction}
+\chkquantity{inductance}
+\chkquantity{linearchargedensity}
+\chkquantity{linearmassdensity}
+\chkquantity{luminous}
+\chkquantity{magneticcharge}
+\chkquantity{magneticdipolemoment}
+\chkquantity{magneticfield}
+\chkquantity{magneticflux}
+\chkquantity{mass}
+\chkquantity{mobility}
+\chkquantity{momentum}
+\chkquantity{momentumflux}
+\chkquantity{momentofinertia}
+\chkquantity{numberdensity}
+\chkquantity{permeability}
+\chkquantity{permittivity}
+\chkquantity{planeangle}
+\chkquantity{polarizability}
+\chkquantity{power}
+\chkquantity{pressure}
+\chkquantity{relativepermeability}
+\chkquantity{relativepermittivity}
+\chkquantity{resistance}
+\chkquantity{resistivity}
+\chkquantity{solidangle}
+\chkquantity{specificheatcapacity}
+\chkquantity{springstiffness}
+\chkquantity{springstretch}
+\chkquantity{stress}
+\chkquantity{strain}
+\chkquantity{temperature}
+\chkquantity{torque}
+\chkquantity{velocity}
+\chkquantity{volume}
+\chkquantity{volumechargedensity}
+\chkquantity{volumemassdensity}
+\chkquantity{wavelength}
+\chkquantity{wavenumber}
+\chkquantity{work}
+\chkquantity{youngsmodulus}
+
 
 \section{Column and Row Vectors}
 \subsection{Column Vectors}
@@ -547,8 +651,7 @@ for read-only access using the URL provided by the user. To minimize the chances
 broken over a pagebreak, each listing begins on a new page. This is a big change from the previous 
 version of \pkg{mandi} and may be annoying for small programs, but I think the clarity of beginning a
 new listing on a new page is important.
-
-\begin{glowscriptblock}[https://google.com]{A \GlowScript\ program.}{pref1}
+\begin{glowscriptblock}[https://www.glowscript.org/#/user/heafnerj/folder/mandidemo/program/mandidemo]{A \GlowScript\ program.}{pref1}
 GlowScript 3.0 VPython
 
 scene.width = 400

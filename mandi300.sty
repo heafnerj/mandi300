@@ -6,7 +6,7 @@
 %%
 %% mandi.dtx  (with options: `package')
 %% 
-%% Copyright (C) 2020 by Paul J. Heafner <heafnerj@gmail.com>
+%% Copyright (C) 2021 by Paul J. Heafner <heafnerj@gmail.com>
 %% ---------------------------------------------------------------------------
 %% This  work may be  distributed and/or modified  under the conditions of the
 %% LaTeX Project Public  License, either  version 1.3  of this  license or (at
@@ -30,7 +30,7 @@
 %% 
 %  NOTE: THE NUMBERS WILL NOT BE IN THE FINAL PACKAGE NAME!
 \def\mandi@Version{3.0.0a}
-\def\mandi@Date{2021-01-01}
+\def\mandi@Date{2021-01-04}
 \ProvidesPackage{mandi300}[\mandi@Date\space v\mandi@Version\space Macros for physics and astronomy]
 \NeedsTeXFormat{LaTeX2e}[1999/12/01]
 
@@ -44,6 +44,7 @@
 % unicode-math loads fontspec and xparse
 \RequirePackage{unicode-math}
 \unimathsetup{math-style=ISO}
+\unimathsetup{warnings-off={mathtools-colon,mathtools-overbracket}}
 \setmathfont[Scale=MatchLowercase]{TeX Gyre DejaVu Math} % Good g everywhere. Based on Arev.
 % Borrow \mathscr and \mathbfscr from XITS Math
 %  See https://tex.stackexchange.com/a/120073/218142
@@ -66,9 +67,10 @@
 \RequirePackage[g]{esvect}                 % needed for nice vector arrow, style g
 \RequirePackage{kvoptions}                 % needed for keyvals
 \SetupKeyvalOptions{%
-  family=mi,%
-  prefix=mi@%
+  family=mandi,%
+  prefix=mandi@%
 }%
+\RequirePackage{array}  % needed for \chkquantity
 \RequirePackage{listings}                  % needed for program listings
 \RequirePackage{makebox}                   % needed for consistent \dirvect; \makebox
 \RequirePackage{mathtools}                 % needed for paired delimiters; extends amsmath
@@ -76,7 +78,7 @@
 \RequirePackage{realboxes}                 % needed for coloring inline listings; \Colorbox
 \RequirePackage{tensor}                    % needed for index notation
 \RequirePackage{tikz}                      % needed for \hilite
-\usetikzlibrary{shapes,fit,tikzmark}
+\usetikzlibrary{shapes,fit,tikzmark}       % needed for \hilite
 \RequirePackage{xargs}                     % needed for the unit engine; \newcommandx
 \RequirePackage{hyperref}                  % load last
 % xcolor                                   % loaded by listings
@@ -97,41 +99,27 @@
 }{}%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Package mandi Options
+% Define Package mandi Options
 %  There aren't as many as before because of ISO 80000-2 notation.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\DeclareBoolOption[false]{baseunits}
-\DeclareBoolOption[false]{alternateunits}
+\DeclareBoolOption[false]{baseunits}      % use base units
+\DeclareBoolOption[false]{derivedunits}   % use derived units
+\DeclareBoolOption[true]{alternateunits} % use alternate units
+\DeclareBoolOption[false]{rotradians}     % use radians in rotational quantities
 \ProcessKeyvalOptions*
 
 \newcommand*{\mandisetup}{%
-  \kvsetkeys{mi}%
-}%
-
-\AtBeginDocument{%
-  \ifmi@baseunits
-    \def\unitmessage{mandi: You'll get base units.}
-    \perpusebaseunit
-  \else
-    \ifmi@alternateunits
-      \def\unitmessage{mandi: You'll get alternate units.}
-      \perpusealternateunit
-    \else
-      \def\unitmessage{mandi: You'll get derived units.}
-      \perpusederivedunit
-    \fi  
-  \fi
+  \kvsetkeys{mandi}%
 }%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Standard Package Messages
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\AtBeginDocument{%
-\typeout{}
-\typeout{mandi: You're using mandi version \mandiversion.}
-\typeout{\unitmessage}
-\typeout{}
-}%
+%%\AtBeginDocument{%
+%%\typeout{}
+%%\typeout{mandi: You're using mandi version \mandiversion.}
+%%\typeout{}
+%%}%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % GlowScript and VPython Code Listings
@@ -214,7 +202,7 @@
 %  Code provided by Ulrich Diez.
 %  See https://tex.stackexchange.com/a/565167/218142
 %  To display a VPython program, omit the optional link.
-\makeatletter
+%\makeatletter
 % Infrastructure for "hyperref-normalizing" an optional argument of a \lstnewenvironment:
 \begingroup
   \catcode`\^^A=14 %
@@ -284,7 +272,7 @@
     \fi
   }%
 }%
-\makeatother
+%\makeatother
 % Creating aliases for environment is generally not thought to be a good idea, so I won't
 % create a vpythonblock alias for glowscriptblock. Just omit the optional parameter for 
 % typesetting a VPython block of code.
@@ -326,6 +314,7 @@
 \newcommand*{\kelvin}{\ensuremath{\symup{K}}}
 \newcommand*{\kilogram}{\ensuremath{\symup{kg}}}
 \newcommand*{\meter}{\ensuremath{\symup{m}}}
+\newcommand*{\metre}{\meter}
 \newcommand*{\minute}{\ensuremath{\symup{min}}}
 \newcommand*{\mole}{\ensuremath{\symup{mol}}}
 \newcommand*{\newton}{\ensuremath{\symup{N}}}
@@ -382,7 +371,7 @@
             % usual catcode-régime when - right after reading and tokenizing
             % it under @-other-catcode-régime - \@firstofone "spits out"
             % its argument whose first token will be \endgroup:
-\makeatletter
+%\makeatletter
 \@firstofone{%
   \endgroup
   \newcommand*\Forkifnull[3]{%
@@ -450,40 +439,375 @@
   \Forkifnull{#7}{%
     \ifx#4\renewcommand\Name\let{#5mathsymbol}=\relax\fi
     \Name\newcommand*{#5mathsymbol}{\ensuremath{#6}}}{}}%
-\makeatother
-%  Define every quantity we need in introductory physics.
-\newphysicsquantity{displacement}%
-  {\meter}%
-  [\meter]%
-  [\meter]%
-\newphysicsquantity{mass}%
-  {\kilogram}%
-  [\kilogram]%
-  [\kilogram]
-\newphysicsquantity{duration}%
-  {\second}%
-  [\second]%
-  [\second]
-\newphysicsquantity{current}%
-  {\ampere}%
-  [\ampere]%
-  [\ampere]%
-\newphysicsquantity{temperature}%
-  {\kelvin}%
-  [\kelvin]%
-  [\kelvin]%
+%\makeatother
+
+% Use options to select units.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\ifmandi@baseunits
+  \perpusebaseunit
+\fi
+\ifmandi@derivedunits
+  \perpusederivedunit
+\fi  
+\ifmandi@alternateunits
+  \perpusealternativeunit
+\fi
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%  Define every quantity we need in introductory physics alphabetically.
+\newphysicsquantity{acceleration}%
+  {\meter\usk\second\reciprocalsquared}%
+  [\newton\per\kilogram]%
+  [\meter\per\second\squared]%
 \newphysicsquantity{amount}%
   {\mole}%
-  [\mole]%
-  [\mole]%
+  []%
+  []%
+\newphysicsquantity{angularvelocity}%
+  {\radian\usk\reciprocal\second}%
+  [\radian\per\second]%
+  [\radian\per\second]%
+\newphysicsquantity{angularacceleration}%
+  {\radian\usk\second\reciprocalsquared}%
+  [\radian\per\second\squared]%
+  [\radian\per\second\squared]%
+\newphysicsquantity{angularfrequency}%
+  {\radian\usk\reciprocal\second}%
+  [\radian\per\second]%
+  [\radian\per\second]%
+\ifmandi@rotradians
+  \newphysicsquantity{angularimpulse}%
+    {\meter\squared\usk\kilogram\usk\reciprocal\second\usk\reciprocal\radian}%
+    [\joule\usk\second\per\radian]%
+    [\newton\usk\meter\usk\second\per\radian]%
+  \newphysicsquantity{angularmomentum}%
+    {\meter\squared\usk\kilogram\usk\reciprocal\second\usk\reciprocal\radian}%
+    [\kilogram\usk\meter\squared\per(\second\usk\radian)]%
+    [\newton\usk\meter\usk\second\per\radian]%
+\else
+  \newphysicsquantity{angularimpulse}%
+    {\meter\squared\usk\kilogram\usk\reciprocal\second}%
+    [\joule\usk\second]%
+    [\newton\usk\meter\usk\second]%
+  \newphysicsquantity{angularmomentum}%
+    {\meter\squared\usk\kilogram\usk\reciprocal\second}%
+    [\kilogram\usk\meter\squared\per\second]%
+    [\newton\usk\meter\usk\second]%
+\fi
+\newphysicsquantity{area}%
+  {\meter\squared}%
+  []%
+  []%
+\newphysicsquantity{areamassdensity}%
+  {\meter\reciprocalsquared\usk\kilogram}%
+  [\kilogram\per\meter\squared]%
+  [\kilogram\per\meter\squared]%
+\newphysicsquantity{areachargedensity}%
+  {\reciprocalsquare\meter\usk\second\usk\ampere}%
+  [\coulomb\per\square\meter]%
+  [\coulomb\per\square\meter]%
+\newphysicsquantity{capacitance}%
+  {\reciprocalsquare\meter\usk\reciprocal\kilogram\usk\quartic\second\usk\square\ampere}%
+  [\farad]%
+  [\coulomb\per\volt]% % also \coulomb\squared\per\newton\usk\meter, \second\per\ohm
+\newphysicsquantity{charge}%
+  {\ampere\usk\second}%
+  [\coulomb]%
+  [\coulomb]% % also \farad\usk\volt
+\newphysicsquantity{cmagneticfield}%
+  {\meter\usk\kilogram\usk\second\reciprocalcubed\usk\reciprocal\ampere}%
+  [\newton\per\coulomb]%
+  [\volt\per\meter]%
+\newphysicsquantity{conductance}%
+  {\reciprocalsquare\meter\usk\reciprocal\kilogram\usk\cubic\second\usk\square\ampere}%
+  [\ampere\per\volt]%
+  [\siemens]%
+\newphysicsquantity{conductivity}%
+  {\reciprocalcubic\meter\usk\reciprocal\kilogram\usk\cubic\second\usk\square\ampere}%
+  [(\ampere\per\square\meter)\per(\volt\per\meter)]%
+  [\siemens\per\meter]%
+\newphysicsquantity{conventionalcurrent}%
+  {\ampere}%
+  [\ampere]%
+  [\coulomb\per\second]%
+\newphysicsquantity{current}%
+  {\ampere}%
+  []%
+  []%
+\newphysicsquantity{currentdensity}%
+  {\reciprocalsquare\meter\usk\ampere}%
+  [\ampere\per\square\meter]%
+  [\coulomb\usk\second\per\square\meter]%
+\newphysicsquantity{displacement}%
+  {\meter}
+  []
+  []
+\newphysicsquantity{duration}%
+  {\second}%
+  []%
+  []%
+\newphysicsquantity{dielectricconstant}%
+  {}%
+  []%
+  []%
+\newphysicsquantity{electricdipolemoment}%
+  {\meter\usk\second\usk\ampere}%
+  [\coulomb\usk\meter]%
+  [\coulomb\usk\meter]%
+\newphysicsquantity{electricfield}%
+  {\meter\usk\kilogram\usk\second\reciprocalcubed\usk\reciprocal\ampere}%
+  [\newton\per\coulomb]%
+  [\volt\per\meter]%
+\newphysicsquantity{electricflux}%
+  {\meter\cubed\usk\kilogram\usk\second\reciprocalcubed\usk\reciprocal\ampere}%
+  [\newton\usk\meter\squared\per\coulomb]%
+  [\volt\usk\meter]%
+\newphysicsquantity{electricpotential}%
+  {\square\meter\usk\kilogram\usk\reciprocalcubic\second\usk\reciprocal\ampere}%
+  [\volt]%
+  [\joule\per\coulomb]%
+\newphysicsquantity{electroncurrent}%
+  {\reciprocal\second}%
+  [\ensuremath{\symup{e}}\per\second]%
+  [\ensuremath{\symup{e}}\per\second]%
+\newphysicsquantity{emf}%
+  {\square\meter\usk\kilogram\usk\reciprocalcubic\second\usk\reciprocal\ampere}%
+  [\volt]%
+  [\joule\per\coulomb]%
+\newphysicsquantity{energy}%
+  {\meter\squared\usk\kilogram\usk\second\reciprocalsquared}%
+  [\joule]%
+  [\newton\usk\meter]%
+\newphysicsquantity{energydensity}%
+  {\meter\reciprocaled\usk\kilogram\usk\reciprocalsquare\second}%
+  [\joule\per\cubic\meter]%
+  [\joule\per\cubic\meter]%
+\newphysicsquantity{energyflux}%
+  {\kilogram\usk\second\reciprocalcubed}%
+  [\watt\per\meter\squared]%
+  [\watt\per\meter\squared]%
+\newphysicsquantity{entropy}%
+  {\meter\squared\usk\kilogram\usk\second\reciprocalsquared\usk\reciprocal\kelvin}%
+  [\joule\per\kelvin]%
+  [\joule\per\kelvin]%
+\newphysicsquantity{frequency}%
+  {\reciprocal\second}%
+  [\hertz]%
+  [\hertz]%
+\newphysicsquantity{force}%
+  {\meter\usk\kilogram\usk\second\reciprocalsquared}%
+  [\newton]%
+  [\newton]% % also \kilogram\usk\meter\per\second\squared
+\newphysicsquantity{gravitationalfield}%
+  {\meter\usk\second\reciprocalsquared}%
+  [\newton\per\kilogram]%
+  [\newton\per\kilogram]%
+\newphysicsquantity{gravitationalpotential}%
+  {\square\meter\usk\reciprocalsquare\second}%
+  [\joule\per\kilogram]%
+  [\joule\per\kilogram]%
+\newphysicsquantity{impulse}%
+  {\meter\usk\kilogram\usk\reciprocal\second}%
+  [\newton\usk\second]%
+  [\newton\usk\second]%
+\newphysicsquantity{indexofrefraction}%
+  {}%
+  []%
+  []%
+\newphysicsquantity{inductance}%
+  {\square\meter\usk\kilogram\usk\reciprocalsquare\second\usk\reciprocalsquare\ampere}%
+  [\henry]%
+  [\volt\usk\second\per\ampere]% % also \square\meter\usk\kilogram\per\coulomb\squared, \Wb\per\ampere
+\newphysicsquantity{linearchargedensity}%
+  {\reciprocal\meter\usk\second\usk\ampere}%
+  [\coulomb\per\meter]%
+  [\coulomb\per\meter]%
+\newphysicsquantity{linearmassdensity}%
+  {\reciprocal\meter\usk\kilogram}%
+  [\kilogram\per\meter]%
+  [\kilogram\per\meter]%
 \newphysicsquantity{luminous}%
   {\candela}%
-  [\candela]%
-  [\candela]%
+  []%
+  []%
+\newphysicsquantity{magneticcharge}%
+  {\meter\usk\ampere}%
+  []%
+  []%
+\newphysicsquantity{magneticdipolemoment}%
+  {\square\meter\usk\ampere}%
+  [\ampere\usk\square\meter]%
+  [\joule\per\tesla]%
+\newphysicsquantity{magneticfield}%
+  {\kilogram\usk\second\reciprocalsquared\usk\reciprocal\ampere}%
+  [\tesla]%
+  [\newton\per\coulomb\usk(\meter\per\second)]% % also \Wb\per\meter\squared
+\newphysicsquantity{magneticflux}%
+  {\meter\squared\usk\kilogram\usk\second\reciprocalsquared\usk\reciprocal\ampere}%
+  [\tesla\usk\meter\squared]%
+  [\volt\usk\second]% % also \Wb and \joule\per\ampere
+\newphysicsquantity{mass}%
+  {\kilogram}%
+  []%
+  []%
+\newphysicsquantity{mobility}%
+  {\meter\squared\usk\kilogram\usk\second\reciprocalquarted\usk\reciprocal\ampere}%
+  [\meter\squared\per\volt\usk\second]%
+  [(\meter\per\second)\per(\newton\per\coulomb)]%
 \newphysicsquantity{momentum}%
   {\meter\usk\kilogram\usk\reciprocal\second}%
   [\newton\usk\second]%
   [\kilogram\usk\meter\per\second]%
+\newphysicsquantity{momentumflux}%
+  {\reciprocal\meter\usk\kilogram\usk\second\reciprocalsquared}%
+  [\newton\per\meter\squared]%
+  [\newton\per\meter\squared]%
+\newphysicsquantity{momentofinertia}%
+  {\meter\squared\usk\kilogram}%
+  [\meter\squared\usk\kilogram]%
+  [\joule\usk\second\squared]%
+\newphysicsquantity{numberdensity}%
+  {\reciprocalcubic\meter}%
+  [\per\cubic\meter]%
+  [\per\cubic\meter]%
+\newphysicsquantity{permeability}%
+  {\meter\usk\kilogram\usk\second\reciprocalsquared\usk\ampere\reciprocalsquared}%
+  [\tesla\usk\meter\per\ampere]%
+  [\henry\per\meter]%
+\newphysicsquantity{permittivity}%
+  {\meter\reciprocalcubed\usk\reciprocal\kilogram\usk\second\reciprocalquarted\usk\ampere\squared}%
+  [\coulomb\squared\per\newton\usk\meter\squared]%
+  [\farad\per\meter]%
+\newphysicsquantity{planeangle}%
+  {\meter\usk\reciprocal\meter}%
+  [\radian]%
+  [\radian]%
+\newphysicsquantity{polarizability}%
+  {\reciprocal\kilogram\usk\second\quarted\usk\square\ampere}%
+  [\coulomb\usk\square\meter\per\volt]%
+  [\coulomb\usk\meter\per(\newton\per\coulomb)]%
+\newphysicsquantity{power}%
+  {\meter\squared\usk\kilogram\usk\second\reciprocalcubed}%
+  [\watt]%
+  [\joule\per\second]%
+\newphysicsquantity{pressure}%
+  {\reciprocal\meter\usk\kilogram\usk\second\reciprocalsquared}%
+  [\pascal]%
+  [\newton\per\meter\squared]%
+\newphysicsquantity{relativepermeability}
+  {}%
+  []%
+  []%
+\newphysicsquantity{relativepermittivity}%
+  {}%
+  []%
+  []%
+\newphysicsquantity{resistance}%
+  {\square\meter\usk\kilogram\usk\reciprocalcubic\second\usk\reciprocalsquare\ampere}%
+  [\ohm]%
+  [\volt\per\ampere]%
+\newphysicsquantity{resistivity}%
+  {\cubic\meter\usk\kilogram\usk\reciprocalcubic\second\usk\reciprocalsquare\ampere}%
+  [\ohm\usk\meter]%
+  [(\volt\per\meter)\per(\ampere\per\square\meter)]%
+\newphysicsquantity{solidangle}%
+  {\meter\squared\usk\reciprocalsquare\meter}%
+  [\steradian]%
+  [\steradian]%
+\newphysicsquantity{specificheatcapacity}%
+  {\meter\squared\usk\second\reciprocalsquared\usk\reciprocal\kelvin}%
+  [\joule\per\kelvin\usk\kilogram]%
+  [\joule\per\kelvin\usk\kilogram]
+\newphysicsquantity{springstiffness}%
+  {\kilogram\usk\second\reciprocalsquared}%
+  [\newton\per\meter]%
+  [\newton\per\meter]%
+\newphysicsquantity{springstretch}% % This is really just a displacement.
+  {\meter}%
+  []%
+  []%
+\newphysicsquantity{stress}%
+  {\reciprocal\meter\usk\kilogram\usk\second\reciprocalsquared}%
+  [\pascal]%
+  [\newton\per\meter\squared]%
+\newphysicsquantity{strain}%
+  {}%
+  []%
+  []%
+\newphysicsquantity{temperature}%
+  {\kelvin}%
+  []%
+  []%
+\ifmandi@rotradians
+  \newphysicsquantity{torque}%
+    {\meter\squared\usk\kilogram\usk\second\reciprocalsquared\usk\reciprocal\radian}%
+    [\newton\usk\meter\per\radian]%
+    [\newton\usk\meter\per\radian]%
+\else
+  \newphysicsquantity{torque}%
+    {\meter\squared\usk\kilogram\usk\second\reciprocalsquared}%
+    [\newton\usk\meter]%
+    [\newton\usk\meter]%
+\fi
+\newphysicsquantity{velocity}%
+  {\meter\usk\reciprocal\second}%
+  [\meter\usk\reciprocal\second]%
+  [\meter\per\second]%
+\newphysicsquantity{volume}%
+  {\cubic\meter}%
+  []%
+  []%
+\newphysicsquantity{volumechargedensity}%
+  {\reciprocalcubic\meter\usk\second\usk\ampere}%
+  [\coulomb\per\cubic\meter]%
+  [\coulomb\per\cubic\meter]%
+\newphysicsquantity{volumemassdensity}%
+  {\meter\reciprocalcubed\usk\kilogram}%
+  [\kilogram\per\meter\cubed]%
+  [\kilogram\per\meter\cubed]%
+\newphysicsquantity{wavelength}% % This is really just a displacement.
+  {\meter}%
+  []%
+  []%
+\newphysicsquantity{wavenumber}%
+  {\reciprocal\meter}%
+  [\per\meter]%
+  [\per\meter]%
+\newphysicsquantity{work}%
+  {\meter\squared\usk\kilogram\usk\second\reciprocalsquared}%
+  [\joule]%
+  [\newton\usk\meter]%
+\newphysicsquantity{youngsmodulus}% % This is really just a stress.
+  {\reciprocal\meter\usk\kilogram\usk\second\reciprocalsquared}%
+  [\pascal]%
+  [\newton\per\meter\squared]%
+\newcommand*{\vectoracceleration}[1]{\ensuremath{\acceleration{\mivector{#1}}}}
+\newcommand*{\vectorangularacceleration}[1]
+  {\ensuremath{\angularacceleration{\mivector{#1}}}}
+\newcommand*{\vectorangularimpulse}[1]{\ensuremath{\angularimpulse{\mivector{#1}}}}
+\newcommand*{\vectorangularmomentum}[1]{\ensuremath{\angularmomentum{\mivector{#1}}}}
+\newcommand*{\vectorangularvelocity}[1]{\ensuremath{\angularvelocity{\mivector{#1}}}}
+\newcommand*{\vectorcmagneticfield}[1]{\ensuremath{\cmagneticfield{\mivector{#1}}}}
+\newcommand*{\vectorcurrentdensity}[1]{\ensuremath{\currentdensity{\mivector{#1}}}}
+\newcommand*{\vectordisplacement}[1]{\ensuremath{\displacement{\mivector{#1}}}}
+\newcommand*{\vectorelectricdipolemoment}[1]
+  {\ensuremath{\electricdipolemoment{\mivector{#1}}}}
+\newcommand*{\vectorelectricfield}[1]{\ensuremath{\electricfield{\mivector{#1}}}}
+\newcommand*{\vectorenergyflux}[1]{\ensuremath{\energyflux{\mivector{#1}}}}
+\newcommand*{\vectorforce}[1]{\ensuremath{\force{\mivector{#1}}}}
+\newcommand*{\vectorgravitationalfield}[1]
+  {\ensuremath{\gravitationalfield{\mivector{#1}}}}
+\newcommand*{\vectorimpulse}[1]{\ensuremath{\impulse{\mivector{#1}}}}
+\newcommand*{\vectormagneticdipolemoment}[1]
+  {\ensuremath{\magneticdipolemoment{\mivector{#1}}}}
+\newcommand*{\vectormagneticfield}[1]{\ensuremath{\magneticfield{\mivector{#1}}}}
+\newcommand*{\vectormomentum}[1]{\ensuremath{\momentum{\mivector{#1}}}}
+\newcommand*{\vectormomentumflux}[1]{\ensuremath{\momentumflux{\mivector{#1}}}}
+\newcommand*{\poyntingvector}{\vectorenergyflux}
+\newcommand*{\vectortorque}[1]{\ensuremath{\torque{\mivector{#1}}}}
+\newcommand*{\vectorvelocity}[1]{\ensuremath{\velocity{\mivector{#1}}}}
+\newcommand*{\vectorvelocityc}[1]{\ensuremath{\velocityc{\mivector{#1}}}}
+\newcommand*{\vectorwavenumber}[1]{\ensuremath{\wavenumber{\mivector{#1}}}}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Highlighting in mathematical expressions.
@@ -744,6 +1068,21 @@
 \newcommand*{\changein}{\Delta}
 % See https://tex.stackexchange.com/q/570223/218142
 \newcommand*{\reason}[2][4cm]{&&\begin{minipage}{#1}\raggedright\small #2\end{minipage}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Undocumented Diagnostic Commands.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand*{\chkquantity}[1]{%
+  \begin{center}
+    \begin{tabular}{>{\centering}p{4cm} >{\centering}p{3cm} >{\centering}p{3cm} >{\centering}p{3cm}}
+      name & base & derived & alternate \tabularnewline
+      \ttfamily\small{\expandafter\string\csname #1\endcsname} & 
+      \small{\csname #1onlybaseunit\endcsname} & 
+      \small{\csname #1onlyderivedunit\endcsname} &
+      \small{\csname #1onlyalternativeunit\endcsname}
+    \end{tabular}
+  \end{center}
+}%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \endinput
