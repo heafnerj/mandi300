@@ -650,9 +650,14 @@ code takes the reader to the relevant source code on \href{https://www.glowscrip
 for read-only access using the URL provided by the user. To minimize the chances of a program being 
 broken over a pagebreak, each listing begins on a new page. This is a big change from the previous 
 version of \pkg{mandi} and may be annoying for small programs, but I think the clarity of beginning a
-new listing on a new page is important.
-\begin{glowscriptblock}[https://www.glowscript.org/#/user/heafnerj/folder/mandidemo/program/mandidemo]{A \GlowScript\ program.}{pref1}
+new listing on a new page is important. I recommend using a URL shortening utility to keep the URL
+from getting unruly, and don't forget to manually prepend either |http://| or |https://| (preferably
+the latter) to the URL. Note that \GlowScript\ ignores the 
+\vpythonline{from vpython import *} line.
+
+\begin{glowscriptblock}[https://tinyurl.com/y3lnqyn3]{A \GlowScript\ program.}{pref1}
 GlowScript 3.0 VPython
+from vpython import *
 
 scene.width = 400
 scene.height = 760
@@ -681,16 +686,6 @@ scene.waitfor('click')         # wait for a mouse click
 
 # initial calculation loop
 # calculation loop
-#while t < 10:
-#    rate(100)
-#    Fnet = Fgrav
-#    pball = pball + Fnet * deltat
-#    ball.pos = ball.pos + (pball / mball) * deltat
-#    spring.axis = ball.pos - ceiling.pos
-#    t = t + deltat
-    
-# modified initial calculation loop
-# calculation loop
 while t < 10:
     rate(100)
     # we need the stretch
@@ -712,6 +707,7 @@ pageref-link to listing: \pageref{pref1}
 
 autoref-link to listing: \autoref{pref1}
 
+\newpage
 It may be annoying for a small program listing like this, but again, I think the clarity is 
 important, especially for beginners. 
 
@@ -734,7 +730,8 @@ because they live on the user's local computer and not online. Since the |glowsc
 turns the code into a hyperlink, it makes no sense semantically to use this environment for \VPython\ 
 programs. Still, it is sometimes helpful to show a block of code this way without turning the code into 
 a hyperlink. Use |glowscriptblock| without the optional argument to typeset a block of \VPython\ code. 
-|\begin{glowscriptblock}{A \VPython\ program}{pref2}| gives
+In this example, note that the \vpythonline{GlowScript 3.0 VPython} line is omitted because \VPython\
+does not ignore it.
 
 \begin{glowscriptblock}{A \VPython\ program}{pref2}
 from vpython import *
@@ -766,16 +763,6 @@ scene.waitfor('click')         # wait for a mouse click
 
 # initial calculation loop
 # calculation loop
-#while t < 10:
-#    rate(100)
-#    Fnet = Fgrav
-#    pball = pball + Fnet * deltat
-#    ball.pos = ball.pos + (pball / mball) * deltat
-#    spring.axis = ball.pos - ceiling.pos
-#    t = t + deltat
-    
-# modified initial calculation loop
-# calculation loop
 while t < 10:
     rate(100)
     # we need the stretch
@@ -797,6 +784,7 @@ pageref-link to listing: \pageref{pref2}
 
 autoref-link to listing: \autoref{pref2}
 
+\newpage
 \subsection{In-line \GlowScript\ and \VPython\ Code}
 In-line code can be included as before using |\glowscriptline{...}| or 
 |\vpythonline{...}|, depending on which is semantically appropriate. Using \newline
@@ -808,7 +796,8 @@ In-line code can be included as before using |\glowscriptline{...}| or
 \subsection{Including a \VPython\ File}
 A \VPython\ file can be included using |\vpythonfile{...}{...}{...}|. The file 
 should be in the same folder as the document being typeset, and a caption and a reference 
-label must be provided. Again, the typeset listing begins on a new page.
+label must be provided. Again, the typeset listing begins on a new page. Note that this
+example contains the exact same code as the example above, but it is read from a file.
 
 \vpythonfile{Sample Program}{vlabel1}{MyProgram.py}
 

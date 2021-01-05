@@ -27,16 +27,6 @@ scene.waitfor('click')         # wait for a mouse click
 
 # initial calculation loop
 # calculation loop
-#while t < 10:
-#    rate(100)
-#    Fnet = Fgrav
-#    pball = pball + Fnet * deltat
-#    ball.pos = ball.pos + (pball / mball) * deltat
-#    spring.axis = ball.pos - ceiling.pos
-#    t = t + deltat
-    
-# modified initial calculation loop
-# calculation loop
 while t < 10:
     rate(100)
     # we need the stretch
@@ -48,4 +38,3 @@ while t < 10:
     ball.pos = ball.pos + (pball / mball) * deltat
     spring.axis = ball.pos - ceiling.pos
     t = t + deltat
-    
