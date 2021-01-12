@@ -30,7 +30,7 @@
 %% 
 %  NOTE: THE NUMBERS WILL NOT BE IN THE FINAL PACKAGE NAME!
 \def\mandi@Version{3.0.0a}
-\def\mandi@Date{2021-01-04}
+\def\mandi@Date{2021-01-11}
 \ProvidesPackage{mandi300}[\mandi@Date\space v\mandi@Version\space Macros for physics and astronomy]
 \NeedsTeXFormat{LaTeX2e}[1999/12/01]
 
@@ -106,6 +106,7 @@
 \DeclareBoolOption[false]{derivedunits}   % use derived units
 \DeclareBoolOption[true]{alternateunits} % use alternate units
 \DeclareBoolOption[false]{rotradians}     % use radians in rotational quantities
+\DeclareBoolOption[false]{exactconstants} % use exact constants
 \ProcessKeyvalOptions*
 
 \newcommand*{\mandisetup}{%
@@ -353,11 +354,11 @@
 %% or can be something like \newcommand or \renewcommand or \long\def
 %% or whatsoever.
 %%%...............................................................
-\newcommand*\ExchangeArgs[2]{#2#1}%
-\newcommand*\Name{}%
-\long\def\Name#1#{\romannumeral0\InnerName{#1}}%
-\newcommand*\InnerName[2]{%
-  \expandafter\ExchangeArgs\expandafter{\csname#2\endcsname}{#1}
+\newcommand*\mi@exchangeargs[2]{#2#1}%
+\newcommand*\mi@name{}%
+\long\def\mi@name#1#{\romannumeral0\mi@innername{#1}}%
+\newcommand*\mi@innername[2]{%
+  \expandafter\mi@exchangeargs\expandafter{\csname#2\endcsname}{#1}
 }%
 %%---------------------------------------------------------------
 %% \Forkifnull - Macro to check if argument doesn't contain any
@@ -374,7 +375,7 @@
 %\makeatletter
 \@firstofone{%
   \endgroup
-  \newcommand*\Forkifnull[3]{%
+  \newcommand*\mi@forkifnull[3]{%
     \romannumeral\iffalse{\fi\expandafter\@secondoftwo\expandafter%
     {\expandafter{\string#1}\expandafter\@secondoftwo\string}%
     \expandafter\@firstoftwo\expandafter{\iffalse}\fi0 #3}{0 #2}%
@@ -413,32 +414,32 @@
 \newcommand*\newphysicsquantity{\definephysicsquantity{\newcommand}}
 \newcommand*\redefinephysicsquantity{\definephysicsquantity{\renewcommand}}
 \newcommandx*\definephysicsquantity[5][4=,5=]{%
-  \innerdefineWhatsoeverQuantityFork{#3}{#4}{#5}{#1}{#2}{}{[1]}{##1}%
+  \innerdefinewhatsoeverquantityfork{#3}{#4}{#5}{#1}{#2}{}{[1]}{##1}%
 }%
 % Defining a new physical constant
 \newcommand*\newphysicsconstant{\definephysicsconstant{\newcommand}}
 \newcommand*\redefinephysicsconstant{\definephysicsconstant{\renewcommand}}
 \newcommandx*\definephysicsconstant[7][6=,7=]{%
-  \innerdefineWhatsoeverQuantityFork{#5}{#6}{#7}{#1}{#2}{#3}{}{#4}%
+  \innerdefinewhatsoeverquantityfork{#5}{#6}{#7}{#1}{#2}{#3}{}{#4}%
 }%
 % Internal macros for defining quantities and constants.
-\newcommand*\innerdefineWhatsoeverQuantityFork[3]{%
-  \expandafter\innerdefineWhatsoeverQuantity\romannumeral0%
-  \Forkifnull{#3}{\Forkifnull{#2}{{#1}}{{#2}}{#1}}{\Forkifnull{#2}{{#1}}{{#2}}{#3}}{#1}%
+\newcommand*\innerdefinewhatsoeverquantityfork[3]{%
+  \expandafter\innerdefinewhatsoeverquantity\romannumeral0%
+  \mi@forkifnull{#3}{\mi@forkifnull{#2}{{#1}}{{#2}}{#1}}{\mi@forkifnull{#2}{{#1}}{{#2}}{#3}}{#1}%
 }%
-\newcommand*\innerdefineWhatsoeverQuantity[8]{%
-  \Name#4{#5}#7{\unit{#8}{\selectunit{#3}{#1}{#2}}}%
-  \Name#4{#5baseunit}#7{\unit{#8}{#3}}%
-  \Name#4{#5derivedunit}#7{\unit{#8}{#1}}%
-  \Name#4{#5alternativeunit}#7{\unit{#8}{#2}}%
-  \Name#4{#5onlyunit}{\selectunit{#3}{#1}{#2}}%
-  \Name#4{#5onlybaseunit}{\ensuremath{#3}}%
-  \Name#4{#5onlyderivedunit}{\ensuremath{#1}}%
-  \Name#4{#5onlyalternativeunit}{\ensuremath{#2}}%
-  \Name#4{#5value}#7{\ensuremath{#8}}%
-  \Forkifnull{#7}{%
-    \ifx#4\renewcommand\Name\let{#5mathsymbol}=\relax\fi
-    \Name\newcommand*{#5mathsymbol}{\ensuremath{#6}}}{}}%
+\newcommand*\innerdefinewhatsoeverquantity[8]{%
+  \mi@name#4{#5}#7{\unit{#8}{\selectunit{#3}{#1}{#2}}}%
+  \mi@name#4{#5baseunit}#7{\unit{#8}{#3}}%
+  \mi@name#4{#5derivedunit}#7{\unit{#8}{#1}}%
+  \mi@name#4{#5alternativeunit}#7{\unit{#8}{#2}}%
+  \mi@name#4{#5onlyunit}{\selectunit{#3}{#1}{#2}}%
+  \mi@name#4{#5onlybaseunit}{\ensuremath{#3}}%
+  \mi@name#4{#5onlyderivedunit}{\ensuremath{#1}}%
+  \mi@name#4{#5onlyalternativeunit}{\ensuremath{#2}}%
+  \mi@name#4{#5value}#7{\ensuremath{#8}}%
+  \mi@forkifnull{#7}{%
+    \ifx#4\renewcommand\mi@name\let{#5mathsymbol}=\relax\fi
+    \mi@name\newcommand*{#5mathsymbol}{\ensuremath{#6}}}{}}%
 %\makeatother
 
 % Use options to select units.
@@ -451,6 +452,11 @@
 \fi  
 \ifmandi@alternateunits
   \perpusealternativeunit
+\fi
+\ifmandi@exactconstants
+  \newcommand*{\mi@p}[2]{#2} % exact constants
+\else
+  \newcommand*{\mi@p}[2]{#1} % approximate constants
 \fi
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -487,12 +493,12 @@
 \else
   \newphysicsquantity{angularimpulse}%
     {\meter\squared\usk\kilogram\usk\reciprocal\second}%
-    [\joule\usk\second]%
-    [\newton\usk\meter\usk\second]%
+    [\kilogram\usk\meter\squared\per\second]% % also \joule\usk\second
+    [\kilogram\usk\meter\squared\per\second]% % also \newton\usk\meter\usk\second
   \newphysicsquantity{angularmomentum}%
     {\meter\squared\usk\kilogram\usk\reciprocal\second}%
-    [\kilogram\usk\meter\squared\per\second]%
-    [\newton\usk\meter\usk\second]%
+    [\kilogram\usk\meter\squared\per\second]% % also \joule\usk\second
+    [\kilogram\usk\meter\squared\per\second]% % also \newton\usk\meter\usk\second
 \fi
 \newphysicsquantity{area}%
   {\meter\squared}%
@@ -516,28 +522,28 @@
   [\coulomb]% % also \farad\usk\volt
 \newphysicsquantity{cmagneticfield}%
   {\meter\usk\kilogram\usk\second\reciprocalcubed\usk\reciprocal\ampere}%
-  [\newton\per\coulomb]%
   [\volt\per\meter]%
+  [\newton\per\coulomb]%
 \newphysicsquantity{conductance}%
   {\reciprocalsquare\meter\usk\reciprocal\kilogram\usk\cubic\second\usk\square\ampere}%
-  [\ampere\per\volt]%
   [\siemens]%
+  [\ampere\per\volt]%
 \newphysicsquantity{conductivity}%
   {\reciprocalcubic\meter\usk\reciprocal\kilogram\usk\cubic\second\usk\square\ampere}%
-  [(\ampere\per\square\meter)\per(\volt\per\meter)]%
   [\siemens\per\meter]%
+  [(\ampere\per\square\meter)\per(\volt\per\meter)]%
 \newphysicsquantity{conventionalcurrent}%
   {\ampere}%
-  [\ampere]%
   [\coulomb\per\second]%
+  [\ampere]%
 \newphysicsquantity{current}%
   {\ampere}%
   []%
   []%
 \newphysicsquantity{currentdensity}%
   {\reciprocalsquare\meter\usk\ampere}%
-  [\ampere\per\square\meter]%
   [\coulomb\usk\second\per\square\meter]%
+  [\ampere\per\square\meter]%
 \newphysicsquantity{displacement}%
   {\meter}
   []
@@ -556,12 +562,12 @@
   [\coulomb\usk\meter]%
 \newphysicsquantity{electricfield}%
   {\meter\usk\kilogram\usk\second\reciprocalcubed\usk\reciprocal\ampere}%
-  [\newton\per\coulomb]%
   [\volt\per\meter]%
+  [\newton\per\coulomb]%
 \newphysicsquantity{electricflux}%
   {\meter\cubed\usk\kilogram\usk\second\reciprocalcubed\usk\reciprocal\ampere}%
-  [\newton\usk\meter\squared\per\coulomb]%
   [\volt\usk\meter]%
+  [\newton\usk\meter\squared\per\coulomb]%
 \newphysicsquantity{electricpotential}%
   {\square\meter\usk\kilogram\usk\reciprocalcubic\second\usk\reciprocal\ampere}%
   [\volt]%
@@ -576,8 +582,8 @@
   [\joule\per\coulomb]%
 \newphysicsquantity{energy}%
   {\meter\squared\usk\kilogram\usk\second\reciprocalsquared}%
+  [\joule]% % also \newton\usk\meter
   [\joule]%
-  [\newton\usk\meter]%
 \newphysicsquantity{energydensity}%
   {\meter\reciprocaled\usk\kilogram\usk\reciprocalsquare\second}%
   [\joule\per\cubic\meter]%
@@ -664,8 +670,8 @@
   [\newton\per\meter\squared]%
 \newphysicsquantity{momentofinertia}%
   {\meter\squared\usk\kilogram}%
-  [\meter\squared\usk\kilogram]%
   [\joule\usk\second\squared]%
+  [\meter\squared\usk\kilogram]%
 \newphysicsquantity{numberdensity}%
   {\reciprocalcubic\meter}%
   [\per\cubic\meter]%
@@ -676,8 +682,8 @@
   [\henry\per\meter]%
 \newphysicsquantity{permittivity}%
   {\meter\reciprocalcubed\usk\reciprocal\kilogram\usk\second\reciprocalquarted\usk\ampere\squared}%
-  [\coulomb\squared\per\newton\usk\meter\squared]%
   [\farad\per\meter]%
+  [\coulomb\squared\per\newton\usk\meter\squared]%
 \newphysicsquantity{planeangle}%
   {\meter\usk\reciprocal\meter}%
   [\radian]%
@@ -704,8 +710,8 @@
   []%
 \newphysicsquantity{resistance}%
   {\square\meter\usk\kilogram\usk\reciprocalcubic\second\usk\reciprocalsquare\ampere}%
-  [\ohm]%
   [\volt\per\ampere]%
+  [\ohm]%
 \newphysicsquantity{resistivity}%
   {\cubic\meter\usk\kilogram\usk\reciprocalcubic\second\usk\reciprocalsquare\ampere}%
   [\ohm\usk\meter]%
@@ -808,6 +814,224 @@
 \newcommand*{\vectorvelocity}[1]{\ensuremath{\velocity{\mivector{#1}}}}
 \newcommand*{\vectorvelocityc}[1]{\ensuremath{\velocityc{\mivector{#1}}}}
 \newcommand*{\vectorwavenumber}[1]{\ensuremath{\wavenumber{\mivector{#1}}}}
+
+%  Define physical constants for introductory physics alphabetically.
+\newphysicsconstant{avogadro}%
+  {\ensuremath{N_A}}%
+  {\mi@p{6.0}{6.022140857}\timestento{23}}%
+  {\reciprocal\mole}%
+  [\reciprocal\mole]%
+  [\reciprocal\mole]%
+\newphysicsconstant{bohrradius}%
+  {\ensuremath{a_0}}%
+  {\mi@p{5.3}{5.2917721067}\timestento{-11}}%
+  {\meter}%
+  [\meter]%
+  [\meter]%
+\newphysicsconstant{boltzmann}%
+  {\ensuremath{k_B}}%
+  {\mi@p{1.4}{1.38064852}\timestento{-23}}%
+  {\meter\squared\usk\kilogram\usk\reciprocalsquare\second\usk\reciprocal\kelvin}%
+  [\joule\per\kelvin]%
+  [\joule\per\kelvin]%
+\newphysicsconstant{clight}%
+  {\ensuremath{c}}%
+  {\mi@p{3}{2.99792458}\timestento{8}}%
+  {\meter\usk\reciprocal\second}%
+  [\meter\per\second]%
+  [\meter\per\second]
+\newphysicsconstant{earthmass}%
+  {\ensuremath{M_{\symup{Earth}}}}%
+  {\mi@p{6.0}{5.97237}\timestento{24}}%
+  {\kilogram}%
+  [\kilogram]%
+  [\kilogram]%
+\newphysicsconstant{earthmoondistance}%
+  {\ensuremath{d_{\symup{EM}}}}%
+  {\mi@p{3.8}{3.81550}\timestento{8}}%
+  {\meter}%
+  [\meter]%
+  [\meter]%
+\newphysicsconstant{earthradius}%
+  {\ensuremath{R_{\symup{Earth}}}}%
+  {\mi@p{6.4}{6.371}\timestento{6}}%
+  {\meter}%
+  [\meter]%
+  [\meter]%
+\newphysicsconstant{earthsundistance}%
+  {\ensuremath{d_{\symup{ES}}}}%
+  {\mi@p{1.5}{1.496}\timestento{11}}%
+  {\meter}%
+  [\meter]%
+  [\meter]%
+\newphysicsconstant{electroncharge}%
+  {\ensuremath{q_e}}%
+  {-\elementarychargevalue}%
+  {\ampere\usk\second}%
+  [\coulomb]%
+  [\coulomb]%
+\newphysicsconstant{electronCharge}%
+  {\ensuremath{Q_e}}%
+  {-\elementarychargevalue}%
+  {\ampere\usk\second}%
+  [\coulomb]%
+  [\coulomb]%
+\newphysicsconstant{electronmass}%
+  {\ensuremath{m_e}}%
+  {\mi@p{9.1}{9.10938356}\timestento{-31}}%
+  {\kilogram}%
+  [\kilogram]%
+  [\kilogram]%
+\newphysicsconstant{elementarycharge}%
+  {\ensuremath{e}}%
+  {\mi@p{1.6}{1.6021766208}\timestento{-19}}%
+  {\ampere\usk\second}%
+  [\coulomb]%
+  [\coulomb]%
+\newphysicsconstant{finestructure}%
+  {\ensuremath{\alpha}}%
+  {\mi@p{\frac{1}{137}}{7.2973525664\timestento{-3}}}%
+  {}%
+  []%
+  []%
+\newphysicsconstant{hydrogenmass}%
+  {\ensuremath{m_H}}%
+  {\mi@p{1.7}{1.6737236}\timestento{-27}}%
+  {\kilogram}%
+  [\kilogram]%
+  [\kilogram]%
+\newphysicsconstant{moonearthdistance}%
+  {\ensuremath{d_{\symup{ME}}}}%
+  {\mi@p{3.8}{3.81550}\timestento{8}}%
+  {\meter}%
+  [\meter]%
+  [\meter]%
+\newphysicsconstant{moonmass}%
+  {\ensuremath{M_{\symup{Moon}}}}%
+  {\mi@p{7.3}{7.342}\timestento{22}}%
+  {\kilogram}%
+  [\kilogram]%
+  [\kilogram]%
+\newphysicsconstant{moonradius}%
+  {\ensuremath{R_{\symup{Moon}}}}%
+  {\mi@p{1.7}{1.7371}\timestento{6}}%
+  {\meter}%
+  [\meter]%
+  [\meter]%
+\newphysicsconstant{mzofp}%
+  {\ensuremath{\frac{\mu_o}{4\pi}}}%
+  {\tento{-7}}%
+  {\meter\usk\kilogram\usk\second\reciprocalsquared\usk\ampere\reciprocalsquared}%
+  [\henry\per\meter]%
+  [\tesla\usk\meter\per\ampere]%
+\newphysicsconstant{neutronmass}%
+  {\ensuremath{m_n}}%
+  {\mi@p{1.7}{1.674927471}\timestento{-27}}%
+  {\kilogram}%
+  [\kilogram]%
+  [\kilogram]%
+\newphysicsconstant{oofpez}%
+  {\ensuremath{\frac{1}{4\pi\epsilon_o}}}%
+  {\mi@p{9}{8.9875517873681764}\timestento{9}}%
+  {\meter\cubed\usk\kilogram\usk\reciprocalquartic\second\usk\ampere\reciprocalsquared}%
+  [\meter\per\farad]%
+  [\newton\usk\meter\squared\per\coulomb\squared]%
+\newphysicsconstant{oofpezcs}%
+  {\ensuremath{\frac{1}{4\pi\epsilon_o c^2}}}%
+  {\tento{-7}}%
+  {\meter\usk\kilogram\usk\second\reciprocalsquared\usk\ampere\reciprocalsquared}%
+  [\tesla\usk\meter\squared]%
+  [\newton\usk\second\squared\per\coulomb\squared]%
+\newphysicsconstant{planck}%
+  {\ensuremath{h}}%
+  {\mi@p{6.6}{6.626070040}\timestento{-34}}%
+  {\meter\squared\usk\kilogram\usk\reciprocal\second}%
+  [\joule\usk\second]%
+  [\joule\usk\second]%
+\newphysicsconstant{planckbar}%
+  {\ensuremath{\hslash}}%
+  {\mi@p{1.1}{1.054571800}\timestento{-34}}%
+  {\meter\squared\usk\kilogram\usk\reciprocal\second}%
+  [\joule\usk\second]%
+  [\joule\usk\second]
+\newphysicsconstant{planckc}%
+  {\ensuremath{hc}}%
+  {\mi@p{2.0}{1.98644568}\timestento{-25}}%
+  {\meter\cubed\usk\kilogram\usk\reciprocalsquare\second}%
+  [\joule\usk\meter]%
+  [\joule\usk\meter]%
+\newphysicsconstant{protoncharge}%
+  {\ensuremath{q_p}}%
+  {+\elementarychargevalue}%
+  {\ampere\usk\second}%
+  [\coulomb]%
+  [\coulomb]%
+\newphysicsconstant{protonCharge}%
+  {\ensuremath{Q_p}}%
+  {+\elementarychargevalue}%
+  {\ampere\usk\second}%
+  [\coulomb]%
+  [\coulomb]%
+\newphysicsconstant{protonmass}%
+  {\ensuremath{m_p}}%
+  {\mi@p{1.7}{1.672621898}\timestento{-27}}%
+  {\kilogram}%
+  [\kilogram]%
+  [\kilogram]%
+\newphysicsconstant{rydberg}%
+  {\ensuremath{R_{\infty}}}%
+  {\mi@p{1.1}{1.0973731568508}\timestento{7}}%
+  {\reciprocal\meter}%
+  [\reciprocal\meter]%
+  [\reciprocal\meter]%
+\newphysicsconstant{stefanboltzmann}%
+  {\ensuremath{\sigma}}%
+  {\mi@p{5.7}{5.670367}\timestento{-8}}%
+  {\kilogram\usk\second\reciprocalcubed\usk\kelvin\reciprocalquarted}%
+  [\watt\per\meter\squared\usk\kelvin\quarted]%
+  [\watt\per\meter\squared\usk\kelvin\quarted]
+\newphysicsconstant{sunearthdistance}%
+  {\ensuremath{d_{\symup{SE}}}}%
+  {\mi@p{1.5}{1.496}\timestento{11}}%
+  {\meter}%
+  [\meter]%
+  [\meter]%
+\newphysicsconstant{sunmass}%
+  {\ensuremath{M_{\symup{Sun}}}}%
+  {\mi@p{2.0}{1.98855}\timestento{30}}%
+  {\kilogram}%
+  [\kilogram]%
+  [\kilogram]%
+\newphysicsconstant{sunradius}%
+  {\ensuremath{R_{\symup{Sun}}}}%
+  {\mi@p{7.0}{6.957}\timestento{8}}%
+  {\meter}%
+  [\meter]%
+  [\meter]%
+\newphysicsconstant{surfacegravfield}%
+  {\ensuremath{g}}%
+  {\mi@p{9.8}{9.807}}%
+  {\meter\usk\second\reciprocalsquared}%
+  [\newton\per\kilogram]%
+  [\newton\per\kilogram]%
+\newphysicsconstant{universalgrav}%
+  {\ensuremath{G}}%
+  {\mi@p{6.7}{6.67408}\timestento{-11}}%
+  {\meter\cubed\usk\reciprocal\kilogram\usk\second\reciprocalsquared}%
+  [\newton\usk\meter\squared\per\kilogram\squared]% % also \joule\usk\meter\per\kilogram\squared
+  [\newton\usk\meter\squared\per\kilogram\squared]%
+\newphysicsconstant{vacuumpermeability}%
+  {\ensuremath{\mu_o}}%
+  {4\pi\timestento{-7}}%
+  {\meter\usk\kilogram\usk\second\reciprocalsquared\usk\ampere\reciprocalsquared}%
+  [\henry\per\meter]%
+  [\tesla\usk\meter\per\ampere]%
+\newphysicsconstant{vacuumpermittivity}%
+  {\ensuremath{\epsilon_o}}%
+  {\mi@p{9.0}{8.854187817}\timestento{-12}}%
+  {\meter\reciprocalcubed\usk\reciprocal\kilogram\usk\second\quarted\usk\ampere\squared}%
+  [\farad\per\meter]%
+  [\coulomb\squared\per\newton\usk\meter\squared]%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Highlighting in mathematical expressions.
@@ -1065,6 +1289,9 @@
 
 % Other Commands.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand*{\tento}[1]{\ensuremath{10^{#1}}}
+\newcommand*{\timestento}[1]{\ensuremath{\;\times\;10^{#1}}}
+\newcommand*{\xtento}{\timestento}
 \newcommand*{\changein}{\Delta}
 % See https://tex.stackexchange.com/q/570223/218142
 \newcommand*{\reason}[2][4cm]{&&\begin{minipage}{#1}\raggedright\small #2\end{minipage}}
@@ -1077,6 +1304,20 @@
     \begin{tabular}{>{\centering}p{4cm} >{\centering}p{3cm} >{\centering}p{3cm} >{\centering}p{3cm}}
       name & base & derived & alternate \tabularnewline
       \ttfamily\small{\expandafter\string\csname #1\endcsname} & 
+      \small{\csname #1onlybaseunit\endcsname} & 
+      \small{\csname #1onlyderivedunit\endcsname} &
+      \small{\csname #1onlyalternativeunit\endcsname}
+    \end{tabular}
+  \end{center}
+}%
+\newcommand*{\chkconstant}[1]{%
+  \begin{center}
+    \begin{tabular}{>{\centering}p{4cm} >{\centering}p{4cm} >{\centering}p{4cm}}
+      name  & symbol & value \tabularnewline
+      \ttfamily\small{\expandafter\string\csname #1\endcsname} & 
+      \small{\csname #1mathsymbol\endcsname} & 
+      \small{\csname #1value\endcsname} \tabularnewline
+      base & derived & alternate  \tabularnewline
       \small{\csname #1onlybaseunit\endcsname} & 
       \small{\csname #1onlyderivedunit\endcsname} &
       \small{\csname #1onlyalternativeunit\endcsname}
