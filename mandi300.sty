@@ -30,7 +30,7 @@
 %% 
 %  NOTE: THE NUMBERS WILL NOT BE IN THE FINAL PACKAGE NAME!
 \def\mandi@Version{3.0.0a}
-\def\mandi@Date{2021-01-11}
+\def\mandi@Date{2021-01-26}
 \ProvidesPackage{mandi300}[\mandi@Date\space v\mandi@Version\space Macros for physics and astronomy]
 \NeedsTeXFormat{LaTeX2e}[1999/12/01]
 
@@ -65,12 +65,8 @@
 \RequirePackage{amsmath}                   % AMS goodness (don't load amssymb or amsfonts)
 \RequirePackage{eso-pic}                   % needed for \hilite
 \RequirePackage[g]{esvect}                 % needed for nice vector arrow, style g
-\RequirePackage{kvoptions}                 % needed for keyvals
-\SetupKeyvalOptions{%
-  family=mandi,%
-  prefix=mandi@%
-}%
-\RequirePackage{array}  % needed for \chkquantity
+\RequirePackage{pgfopts}                   % needed for key-value interface
+\RequirePackage{array}                     % needed for \chkquantity
 \RequirePackage{listings}                  % needed for program listings
 \RequirePackage{makebox}                   % needed for consistent \dirvect; \makebox
 \RequirePackage{mathtools}                 % needed for paired delimiters; extends amsmath
@@ -97,30 +93,6 @@
   <8.5-9.5> vect9
   <9.5-> vect10
 }{}%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% Define Package mandi Options
-%  There aren't as many as before because of ISO 80000-2 notation.
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\DeclareBoolOption[false]{baseunits}      % use base units
-\DeclareBoolOption[false]{derivedunits}   % use derived units
-\DeclareBoolOption[true]{alternateunits} % use alternate units
-\DeclareBoolOption[false]{rotradians}     % use radians in rotational quantities
-\DeclareBoolOption[false]{exactconstants} % use exact constants
-\ProcessKeyvalOptions*
-
-\newcommand*{\mandisetup}{%
-  \kvsetkeys{mandi}%
-}%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% Standard Package Messages
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%\AtBeginDocument{%
-%%\typeout{}
-%%\typeout{mandi: You're using mandi version \mandiversion.}
-%%\typeout{}
-%%}%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % GlowScript and VPython Code Listings
@@ -203,7 +175,7 @@
 %  Code provided by Ulrich Diez.
 %  See https://tex.stackexchange.com/a/565167/218142
 %  To display a VPython program, omit the optional link.
-%\makeatletter
+
 % Infrastructure for "hyperref-normalizing" an optional argument of a \lstnewenvironment:
 \begingroup
   \catcode`\^^A=14 %
@@ -273,7 +245,6 @@
     \fi
   }%
 }%
-%\makeatother
 % Creating aliases for environment is generally not thought to be a good idea, so I won't
 % create a vpythonblock alias for glowscriptblock. Just omit the optional parameter for 
 % typesetting a VPython block of code.
@@ -354,11 +325,11 @@
 %% or can be something like \newcommand or \renewcommand or \long\def
 %% or whatsoever.
 %%%...............................................................
-\newcommand*\mi@exchangeargs[2]{#2#1}%
-\newcommand*\mi@name{}%
-\long\def\mi@name#1#{\romannumeral0\mi@innername{#1}}%
-\newcommand*\mi@innername[2]{%
-  \expandafter\mi@exchangeargs\expandafter{\csname#2\endcsname}{#1}
+\newcommand*\mandi@exchangeargs[2]{#2#1}%
+\newcommand*\mandi@name{}%
+\long\def\mandi@name#1#{\romannumeral0\mandi@innername{#1}}%
+\newcommand*\mandi@innername[2]{%
+  \expandafter\mandi@exchangeargs\expandafter{\csname#2\endcsname}{#1}
 }%
 %%---------------------------------------------------------------
 %% \Forkifnull - Macro to check if argument doesn't contain any
@@ -372,10 +343,9 @@
             % usual catcode-régime when - right after reading and tokenizing
             % it under @-other-catcode-régime - \@firstofone "spits out"
             % its argument whose first token will be \endgroup:
-%\makeatletter
 \@firstofone{%
   \endgroup
-  \newcommand*\mi@forkifnull[3]{%
+  \newcommand*\mandi@forkifnull[3]{%
     \romannumeral\iffalse{\fi\expandafter\@secondoftwo\expandafter%
     {\expandafter{\string#1}\expandafter\@secondoftwo\string}%
     \expandafter\@firstoftwo\expandafter{\iffalse}\fi0 #3}{0 #2}%
@@ -391,25 +361,25 @@
 %  {<traditional unit>}%
 % Thus the "unit-selecting"-macros need to get either the first or the second
 % or the third argument of three arguments;
-\newcommand*\selectbaseunit[3]{#1}
-\newcommand*\selectderivedunit[3]{#2}
-\newcommand*\selectalternativeunit[3]{#3}
+\newcommand*\selectbaseunits[3]{#1}
+\newcommand*\selectderivedunits[3]{#2}
+\newcommand*\selectalternateunits[3]{#3}
 % \selectunit will select the unit and when doing so, it will
 % be redefined via \let to equal either \selectbaseunit or
 % \selectderivedunit or \selectalternateunit or \selectmathsymbol:
 \newcommand*\selectunit{}
 % "Switches" to "tell"  \selectunit which sort of unit to select:
-\newcommand*\perpusebaseunit{\let\selectunit=\selectbaseunit}
-\newcommand*\perpusederivedunit{\let\selectunit=\selectderivedunit}
-\newcommand*\perpusealternativeunit{\let\selectunit=\selectalternativeunit}
+\newcommand*\perpusebaseunits{\let\selectunit=\selectbaseunits}
+\newcommand*\perpusederivedunits{\let\selectunit=\selectderivedunits}
+\newcommand*\perpusealternateunits{\let\selectunit=\selectalternateunits}
 % Localized variants of the unit selectors:
-\newcommand*\hereusebaseunit[1]{\begingroup\perpusebaseunit#1\endgroup}%
-\newcommand*\hereusederivedunit[1]{\begingroup\perpusederivedunit#1\endgroup}%
-\newcommand*\hereusealternativeunit[1]{\begingroup\perpusealternativeunit#1\endgroup}%
+\newcommand*\hereusebaseunits[1]{\begingroup\perpusebaseunits#1\endgroup}%
+\newcommand*\hereusederivedunits[1]{\begingroup\perpusederivedunits#1\endgroup}%
+\newcommand*\hereusealternateunits[1]{\begingroup\perpusealternateunits#1\endgroup}%
 % Environment variants of the unit-selectors:
-\newenvironment{usebaseunit}{\perpusebaseunit}{}%
-\newenvironment{usederivedunit}{\perpusederivedunit}{}%
-\newenvironment{usealternativeunit}{\perpusealternativeunit}{}%
+\newenvironment{usebaseunits}{\perpusebaseunits}{}%
+\newenvironment{usederivedunits}{\perpusederivedunits}{}%
+\newenvironment{usealternateunits}{\perpusealternateunits}{}%
 % Defining a new physical quantity.
 \newcommand*\newphysicsquantity{\definephysicsquantity{\newcommand}}
 \newcommand*\redefinephysicsquantity{\definephysicsquantity{\renewcommand}}
@@ -425,39 +395,74 @@
 % Internal macros for defining quantities and constants.
 \newcommand*\innerdefinewhatsoeverquantityfork[3]{%
   \expandafter\innerdefinewhatsoeverquantity\romannumeral0%
-  \mi@forkifnull{#3}{\mi@forkifnull{#2}{{#1}}{{#2}}{#1}}{\mi@forkifnull{#2}{{#1}}{{#2}}{#3}}{#1}%
+  \mandi@forkifnull{#3}{\mandi@forkifnull{#2}{{#1}}{{#2}}{#1}}{\mandi@forkifnull{#2}{{#1}}{{#2}}{#3}}{#1}%
 }%
 \newcommand*\innerdefinewhatsoeverquantity[8]{%
-  \mi@name#4{#5}#7{\unit{#8}{\selectunit{#3}{#1}{#2}}}%
-  \mi@name#4{#5baseunit}#7{\unit{#8}{#3}}%
-  \mi@name#4{#5derivedunit}#7{\unit{#8}{#1}}%
-  \mi@name#4{#5alternativeunit}#7{\unit{#8}{#2}}%
-  \mi@name#4{#5onlyunit}{\selectunit{#3}{#1}{#2}}%
-  \mi@name#4{#5onlybaseunit}{\ensuremath{#3}}%
-  \mi@name#4{#5onlyderivedunit}{\ensuremath{#1}}%
-  \mi@name#4{#5onlyalternativeunit}{\ensuremath{#2}}%
-  \mi@name#4{#5value}#7{\ensuremath{#8}}%
-  \mi@forkifnull{#7}{%
-    \ifx#4\renewcommand\mi@name\let{#5mathsymbol}=\relax\fi
-    \mi@name\newcommand*{#5mathsymbol}{\ensuremath{#6}}}{}}%
-%\makeatother
+  \mandi@name#4{#5}#7{\unit{#8}{\selectunit{#3}{#1}{#2}}}%
+  \mandi@name#4{#5baseunits}#7{\unit{#8}{#3}}%
+  \mandi@name#4{#5derivedunits}#7{\unit{#8}{#1}}%
+  \mandi@name#4{#5alternateunits}#7{\unit{#8}{#2}}%
+  \mandi@name#4{#5onlyunits}{\selectunit{#3}{#1}{#2}}%
+  \mandi@name#4{#5onlybaseunits}{\ensuremath{#3}}%
+  \mandi@name#4{#5onlyderivedunits}{\ensuremath{#1}}%
+  \mandi@name#4{#5onlyalternateunits}{\ensuremath{#2}}%
+  \mandi@name#4{#5value}#7{\ensuremath{#8}}%
+  \mandi@forkifnull{#7}{%
+    \ifx#4\renewcommand\mandi@name\let{#5mathsymbol}=\relax\fi
+    \mandi@name\newcommand*{#5mathsymbol}{\ensuremath{#6}}}{}}%
 
-% Use options to select units.
+% Define Package mandi Options
+%  There aren't as many as before because of ISO 80000-2 notation.
+%  There are two options:
+%  units=base, derived, or alternate to set the default form of units
+%  usepreciseconstants=true/false to use precise numerical values for constants.
+%    Otherwise approximate numerical values will be used.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\ifmandi@baseunits
-  \perpusebaseunit
-\fi
-\ifmandi@derivedunits
-  \perpusederivedunit
-\fi  
-\ifmandi@alternateunits
-  \perpusealternativeunit
-\fi
-\ifmandi@exactconstants
-  \newcommand*{\mi@p}[2]{#2} % exact constants
-\else
-  \newcommand*{\mi@p}[2]{#1} % approximate constants
-\fi
+\newif\ifusingpreciseconstants
+\pgfkeys{%
+  /mandi/options/.cd,
+  initial@setup/.style={%
+    /mandi/options/buffered@units/.initial=alternate,%
+  },%
+  initial@setup,%
+  usepreciseconstants/.is if=usingpreciseconstants,%
+  units/.is choice,%
+  units/.default=derived,%
+  units/alternate/.style={/mandi/options/buffered@units=alternate},%
+  units/base/.style={/mandi/options/buffered@units=base},%
+  units/derived/.style={/mandi/options/buffered@units=derived},%
+}%
+\ProcessPgfPackageOptions{/mandi/options}
+
+\newcommand*{\mandi@lineone}{\typeout{mandi: Loadtime defaults...}}
+\NewDocumentCommand{\mandisetup}{ m }{%
+  \pgfkeys{/mandi/options/initial@setup}%
+  \IfValueT{#1}{%
+    \pgfqkeys{/mandi/options}{#1}
+    \renewcommand*{\mandi@lineone}{\typeout{mandi: Reconfiguring defaults...}}
+  }%
+  \mandi@do@setup
+}%
+
+\newcommand*{\mandi@selectconstant}{}
+\NewDocumentCommand{\mandi@do@setup}{}{%
+  \typeout{}%
+  \mandi@lineone
+  \typeout{mandi: You are using mandi \mandiversion.}
+  \csname
+    perpuse\pgfkeysvalueof{/mandi/options/buffered@units}units%
+  \endcsname
+  \typeout{mandi: You will get \pgfkeysvalueof{/mandi/options/buffered@units}\space units.}
+  \ifusingpreciseconstants
+    \renewcommand*{\mandi@selectconstant}{\@secondoftwo}
+    \typeout{mandi: You will get precise constants.}
+  \else
+    \renewcommand*{\mandi@selectconstant}{\@firstoftwo}
+    \typeout{mandi: You will get approximate constants.}
+  \fi
+  \typeout{}%
+}%
+\mandi@do@setup
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %  Define every quantity we need in introductory physics alphabetically.
@@ -481,16 +486,16 @@
   {\radian\usk\reciprocal\second}%
   [\radian\per\second]%
   [\radian\per\second]%
-\ifmandi@rotradians
-  \newphysicsquantity{angularimpulse}%
-    {\meter\squared\usk\kilogram\usk\reciprocal\second\usk\reciprocal\radian}%
-    [\joule\usk\second\per\radian]%
-    [\newton\usk\meter\usk\second\per\radian]%
-  \newphysicsquantity{angularmomentum}%
-    {\meter\squared\usk\kilogram\usk\reciprocal\second\usk\reciprocal\radian}%
-    [\kilogram\usk\meter\squared\per(\second\usk\radian)]%
-    [\newton\usk\meter\usk\second\per\radian]%
-\else
+%\ifmandi@rotradians
+%  \newphysicsquantity{angularimpulse}%
+%    {\meter\squared\usk\kilogram\usk\reciprocal\second\usk\reciprocal\radian}%
+%    [\joule\usk\second\per\radian]%
+%    [\newton\usk\meter\usk\second\per\radian]%
+%  \newphysicsquantity{angularmomentum}%
+%    {\meter\squared\usk\kilogram\usk\reciprocal\second\usk\reciprocal\radian}%
+%    [\kilogram\usk\meter\squared\per(\second\usk\radian)]%
+%    [\newton\usk\meter\usk\second\per\radian]%
+%\else
   \newphysicsquantity{angularimpulse}%
     {\meter\squared\usk\kilogram\usk\reciprocal\second}%
     [\kilogram\usk\meter\squared\per\second]% % also \joule\usk\second
@@ -499,7 +504,7 @@
     {\meter\squared\usk\kilogram\usk\reciprocal\second}%
     [\kilogram\usk\meter\squared\per\second]% % also \joule\usk\second
     [\kilogram\usk\meter\squared\per\second]% % also \newton\usk\meter\usk\second
-\fi
+%\fi
 \newphysicsquantity{area}%
   {\meter\squared}%
   []%
@@ -744,17 +749,17 @@
   {\kelvin}%
   []%
   []%
-\ifmandi@rotradians
-  \newphysicsquantity{torque}%
-    {\meter\squared\usk\kilogram\usk\second\reciprocalsquared\usk\reciprocal\radian}%
-    [\newton\usk\meter\per\radian]%
-    [\newton\usk\meter\per\radian]%
-\else
+%\ifmandi@rotradians
+%  \newphysicsquantity{torque}%
+%    {\meter\squared\usk\kilogram\usk\second\reciprocalsquared\usk\reciprocal\radian}%
+%    [\newton\usk\meter\per\radian]%
+%    [\newton\usk\meter\per\radian]%
+%\else
   \newphysicsquantity{torque}%
     {\meter\squared\usk\kilogram\usk\second\reciprocalsquared}%
     [\newton\usk\meter]%
     [\newton\usk\meter]%
-\fi
+%\fi
 \newphysicsquantity{velocity}%
   {\meter\usk\reciprocal\second}%
   [\meter\usk\reciprocal\second]%
@@ -818,49 +823,49 @@
 %  Define physical constants for introductory physics alphabetically.
 \newphysicsconstant{avogadro}%
   {\ensuremath{N_A}}%
-  {\mi@p{6.0}{6.022140857}\timestento{23}}%
+  {\mandi@selectconstant{6.0}{6.022140857}\timestento{23}}%
   {\reciprocal\mole}%
   [\reciprocal\mole]%
   [\reciprocal\mole]%
 \newphysicsconstant{bohrradius}%
   {\ensuremath{a_0}}%
-  {\mi@p{5.3}{5.2917721067}\timestento{-11}}%
+  {\mandi@selectconstant{5.3}{5.2917721067}\timestento{-11}}%
   {\meter}%
   [\meter]%
   [\meter]%
 \newphysicsconstant{boltzmann}%
   {\ensuremath{k_B}}%
-  {\mi@p{1.4}{1.38064852}\timestento{-23}}%
+  {\mandi@selectconstant{1.4}{1.38064852}\timestento{-23}}%
   {\meter\squared\usk\kilogram\usk\reciprocalsquare\second\usk\reciprocal\kelvin}%
   [\joule\per\kelvin]%
   [\joule\per\kelvin]%
 \newphysicsconstant{clight}%
   {\ensuremath{c}}%
-  {\mi@p{3}{2.99792458}\timestento{8}}%
+  {\mandi@selectconstant{3}{2.99792458}\timestento{8}}%
   {\meter\usk\reciprocal\second}%
   [\meter\per\second]%
   [\meter\per\second]
 \newphysicsconstant{earthmass}%
   {\ensuremath{M_{\symup{Earth}}}}%
-  {\mi@p{6.0}{5.97237}\timestento{24}}%
+  {\mandi@selectconstant{6.0}{5.97237}\timestento{24}}%
   {\kilogram}%
   [\kilogram]%
   [\kilogram]%
 \newphysicsconstant{earthmoondistance}%
   {\ensuremath{d_{\symup{EM}}}}%
-  {\mi@p{3.8}{3.81550}\timestento{8}}%
+  {\mandi@selectconstant{3.8}{3.81550}\timestento{8}}%
   {\meter}%
   [\meter]%
   [\meter]%
 \newphysicsconstant{earthradius}%
   {\ensuremath{R_{\symup{Earth}}}}%
-  {\mi@p{6.4}{6.371}\timestento{6}}%
+  {\mandi@selectconstant{6.4}{6.371}\timestento{6}}%
   {\meter}%
   [\meter]%
   [\meter]%
 \newphysicsconstant{earthsundistance}%
   {\ensuremath{d_{\symup{ES}}}}%
-  {\mi@p{1.5}{1.496}\timestento{11}}%
+  {\mandi@selectconstant{1.5}{1.496}\timestento{11}}%
   {\meter}%
   [\meter]%
   [\meter]%
@@ -878,43 +883,43 @@
   [\coulomb]%
 \newphysicsconstant{electronmass}%
   {\ensuremath{m_e}}%
-  {\mi@p{9.1}{9.10938356}\timestento{-31}}%
+  {\mandi@selectconstant{9.1}{9.10938356}\timestento{-31}}%
   {\kilogram}%
   [\kilogram]%
   [\kilogram]%
 \newphysicsconstant{elementarycharge}%
   {\ensuremath{e}}%
-  {\mi@p{1.6}{1.6021766208}\timestento{-19}}%
+  {\mandi@selectconstant{1.6}{1.6021766208}\timestento{-19}}%
   {\ampere\usk\second}%
   [\coulomb]%
   [\coulomb]%
 \newphysicsconstant{finestructure}%
   {\ensuremath{\alpha}}%
-  {\mi@p{\frac{1}{137}}{7.2973525664\timestento{-3}}}%
+  {\mandi@selectconstant{\frac{1}{137}}{7.2973525664\timestento{-3}}}%
   {}%
   []%
   []%
 \newphysicsconstant{hydrogenmass}%
   {\ensuremath{m_H}}%
-  {\mi@p{1.7}{1.6737236}\timestento{-27}}%
+  {\mandi@selectconstant{1.7}{1.6737236}\timestento{-27}}%
   {\kilogram}%
   [\kilogram]%
   [\kilogram]%
 \newphysicsconstant{moonearthdistance}%
   {\ensuremath{d_{\symup{ME}}}}%
-  {\mi@p{3.8}{3.81550}\timestento{8}}%
+  {\mandi@selectconstant{3.8}{3.81550}\timestento{8}}%
   {\meter}%
   [\meter]%
   [\meter]%
 \newphysicsconstant{moonmass}%
   {\ensuremath{M_{\symup{Moon}}}}%
-  {\mi@p{7.3}{7.342}\timestento{22}}%
+  {\mandi@selectconstant{7.3}{7.342}\timestento{22}}%
   {\kilogram}%
   [\kilogram]%
   [\kilogram]%
 \newphysicsconstant{moonradius}%
   {\ensuremath{R_{\symup{Moon}}}}%
-  {\mi@p{1.7}{1.7371}\timestento{6}}%
+  {\mandi@selectconstant{1.7}{1.7371}\timestento{6}}%
   {\meter}%
   [\meter]%
   [\meter]%
@@ -926,13 +931,13 @@
   [\tesla\usk\meter\per\ampere]%
 \newphysicsconstant{neutronmass}%
   {\ensuremath{m_n}}%
-  {\mi@p{1.7}{1.674927471}\timestento{-27}}%
+  {\mandi@selectconstant{1.7}{1.674927471}\timestento{-27}}%
   {\kilogram}%
   [\kilogram]%
   [\kilogram]%
 \newphysicsconstant{oofpez}%
   {\ensuremath{\frac{1}{4\pi\epsilon_o}}}%
-  {\mi@p{9}{8.9875517873681764}\timestento{9}}%
+  {\mandi@selectconstant{9}{8.9875517873681764}\timestento{9}}%
   {\meter\cubed\usk\kilogram\usk\reciprocalquartic\second\usk\ampere\reciprocalsquared}%
   [\meter\per\farad]%
   [\newton\usk\meter\squared\per\coulomb\squared]%
@@ -944,19 +949,19 @@
   [\newton\usk\second\squared\per\coulomb\squared]%
 \newphysicsconstant{planck}%
   {\ensuremath{h}}%
-  {\mi@p{6.6}{6.626070040}\timestento{-34}}%
+  {\mandi@selectconstant{6.6}{6.626070040}\timestento{-34}}%
   {\meter\squared\usk\kilogram\usk\reciprocal\second}%
   [\joule\usk\second]%
   [\joule\usk\second]%
 \newphysicsconstant{planckbar}%
   {\ensuremath{\hslash}}%
-  {\mi@p{1.1}{1.054571800}\timestento{-34}}%
+  {\mandi@selectconstant{1.1}{1.054571800}\timestento{-34}}%
   {\meter\squared\usk\kilogram\usk\reciprocal\second}%
   [\joule\usk\second]%
   [\joule\usk\second]
 \newphysicsconstant{planckc}%
   {\ensuremath{hc}}%
-  {\mi@p{2.0}{1.98644568}\timestento{-25}}%
+  {\mandi@selectconstant{2.0}{1.98644568}\timestento{-25}}%
   {\meter\cubed\usk\kilogram\usk\reciprocalsquare\second}%
   [\joule\usk\meter]%
   [\joule\usk\meter]%
@@ -974,49 +979,49 @@
   [\coulomb]%
 \newphysicsconstant{protonmass}%
   {\ensuremath{m_p}}%
-  {\mi@p{1.7}{1.672621898}\timestento{-27}}%
+  {\mandi@selectconstant{1.7}{1.672621898}\timestento{-27}}%
   {\kilogram}%
   [\kilogram]%
   [\kilogram]%
 \newphysicsconstant{rydberg}%
   {\ensuremath{R_{\infty}}}%
-  {\mi@p{1.1}{1.0973731568508}\timestento{7}}%
+  {\mandi@selectconstant{1.1}{1.0973731568508}\timestento{7}}%
   {\reciprocal\meter}%
   [\reciprocal\meter]%
   [\reciprocal\meter]%
 \newphysicsconstant{stefanboltzmann}%
   {\ensuremath{\sigma}}%
-  {\mi@p{5.7}{5.670367}\timestento{-8}}%
+  {\mandi@selectconstant{5.7}{5.670367}\timestento{-8}}%
   {\kilogram\usk\second\reciprocalcubed\usk\kelvin\reciprocalquarted}%
   [\watt\per\meter\squared\usk\kelvin\quarted]%
   [\watt\per\meter\squared\usk\kelvin\quarted]
 \newphysicsconstant{sunearthdistance}%
   {\ensuremath{d_{\symup{SE}}}}%
-  {\mi@p{1.5}{1.496}\timestento{11}}%
+  {\mandi@selectconstant{1.5}{1.496}\timestento{11}}%
   {\meter}%
   [\meter]%
   [\meter]%
 \newphysicsconstant{sunmass}%
   {\ensuremath{M_{\symup{Sun}}}}%
-  {\mi@p{2.0}{1.98855}\timestento{30}}%
+  {\mandi@selectconstant{2.0}{1.98855}\timestento{30}}%
   {\kilogram}%
   [\kilogram]%
   [\kilogram]%
 \newphysicsconstant{sunradius}%
   {\ensuremath{R_{\symup{Sun}}}}%
-  {\mi@p{7.0}{6.957}\timestento{8}}%
+  {\mandi@selectconstant{7.0}{6.957}\timestento{8}}%
   {\meter}%
   [\meter]%
   [\meter]%
 \newphysicsconstant{surfacegravfield}%
   {\ensuremath{g}}%
-  {\mi@p{9.8}{9.807}}%
+  {\mandi@selectconstant{9.8}{9.807}}%
   {\meter\usk\second\reciprocalsquared}%
   [\newton\per\kilogram]%
   [\newton\per\kilogram]%
 \newphysicsconstant{universalgrav}%
   {\ensuremath{G}}%
-  {\mi@p{6.7}{6.67408}\timestento{-11}}%
+  {\mandi@selectconstant{6.7}{6.67408}\timestento{-11}}%
   {\meter\cubed\usk\reciprocal\kilogram\usk\second\reciprocalsquared}%
   [\newton\usk\meter\squared\per\kilogram\squared]% % also \joule\usk\meter\per\kilogram\squared
   [\newton\usk\meter\squared\per\kilogram\squared]%
@@ -1028,7 +1033,7 @@
   [\tesla\usk\meter\per\ampere]%
 \newphysicsconstant{vacuumpermittivity}%
   {\ensuremath{\epsilon_o}}%
-  {\mi@p{9.0}{8.854187817}\timestento{-12}}%
+  {\mandi@selectconstant{9.0}{8.854187817}\timestento{-12}}%
   {\meter\reciprocalcubed\usk\reciprocal\kilogram\usk\second\quarted\usk\ampere\squared}%
   [\farad\per\meter]%
   [\coulomb\squared\per\newton\usk\meter\squared]%
@@ -1039,13 +1044,13 @@
 \newcounter{tikzhighlightnode}
 \NewDocumentCommand{\hilite}{ O{magenta!60} m O{rectangle} }{%
   % Original code by anonymous user abcdefg, modified by me.
-  % See https://texample.net/tikz/examples/beamer-arrows/
-  % See also https://tex.stackexchange.com/a/406084/218142
-  % See also https://tex.stackexchange.com/a/570858/218142
-  % See also https://tex.stackexchange.com/a/570789/218142
-  % See also https://tex.stackexchange.com/a/79659/218142
-  % See also https://tex.stackexchange.com/q/375032/218142
-  % See also https://tex.stackexchange.com/a/571744/218142
+  %  See https://texample.net/tikz/examples/beamer-arrows/
+  %  See also https://tex.stackexchange.com/a/406084/218142
+  %  See also https://tex.stackexchange.com/a/570858/218142
+  %  See also https://tex.stackexchange.com/a/570789/218142
+  %  See also https://tex.stackexchange.com/a/79659/218142
+  %  See also https://tex.stackexchange.com/q/375032/218142
+  %  See also https://tex.stackexchange.com/a/571744/218142
   \stepcounter{tikzhighlightnode}%
   \tikzmarknode{highlighted-node-\number\value{tikzhighlightnode}}{#2}%
   \edef\temp{%
@@ -1293,7 +1298,7 @@
 \newcommand*{\timestento}[1]{\ensuremath{\;\times\;10^{#1}}}
 \newcommand*{\xtento}{\timestento}
 \newcommand*{\changein}{\Delta}
-% See https://tex.stackexchange.com/q/570223/218142
+%  See https://tex.stackexchange.com/q/570223/218142
 \newcommand*{\reason}[2][4cm]{&&\begin{minipage}{#1}\raggedright\small #2\end{minipage}}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -1304,9 +1309,9 @@
     \begin{tabular}{>{\centering}p{4cm} >{\centering}p{3cm} >{\centering}p{3cm} >{\centering}p{3cm}}
       name & base & derived & alternate \tabularnewline
       \ttfamily\small{\expandafter\string\csname #1\endcsname} & 
-      \small{\csname #1onlybaseunit\endcsname} & 
-      \small{\csname #1onlyderivedunit\endcsname} &
-      \small{\csname #1onlyalternativeunit\endcsname}
+      \small{\csname #1onlybaseunits\endcsname} & 
+      \small{\csname #1onlyderivedunits\endcsname} &
+      \small{\csname #1onlyalternateunits\endcsname}
     \end{tabular}
   \end{center}
 }%
@@ -1318,9 +1323,9 @@
       \small{\csname #1mathsymbol\endcsname} & 
       \small{\csname #1value\endcsname} \tabularnewline
       base & derived & alternate  \tabularnewline
-      \small{\csname #1onlybaseunit\endcsname} & 
-      \small{\csname #1onlyderivedunit\endcsname} &
-      \small{\csname #1onlyalternativeunit\endcsname}
+      \small{\csname #1onlybaseunits\endcsname} & 
+      \small{\csname #1onlyderivedunits\endcsname} &
+      \small{\csname #1onlyalternateunits\endcsname}
     \end{tabular}
   \end{center}
 }%

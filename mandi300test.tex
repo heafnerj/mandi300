@@ -6,6 +6,7 @@
 
 \documentclass{article}
 \usepackage{mandi300}         % main mandi package
+\mandisetup{units=base,usepreciseconstants}
 \usepackage{mandiexp300}      % expressions for M&I; optional
 %\hypersetup{colorlinks=false} % borders around links
 \hypersetup{colorlinks=true} % colored links; no borders
@@ -14,7 +15,7 @@
 \usepackage{geometry}         % needed for changing margins
 \usepackage{lipsum}           % needed for dummy text
 
-% See https://tex.stackexchange.com/q/156383/218142
+%  See https://tex.stackexchange.com/q/156383/218142
 \newcommand*{\pkg}[1]{\textsf{#1}}                    % typeset package names
 \newcommand*{\GlowScript}{\texttt{GlowScript}}        % typeset GlowScript
 \newcommand*{\GlowScriptorg}{\texttt{GlowScript.org}} % typeset GlowScript.org
@@ -330,34 +331,36 @@ There is an intelligent exterior derivative operator.
 \subsection{Physical Quantities}
 The seven fundamental SI quantities are displacement (\displacement{3}), duration (\duration{3}),
 mass (\mass{3}), electric current (\current{3}), thermodynamic temperature (\temperature{3}), 
-amount (\amount{3}), and luminous intensity (\luminous{3}). 
+amount (\amount{3}), and luminous intensity (\luminous{3}).
+
+\momentum{6}
 
 
-\hereusebaseunit{\momentum{4}},
-\hereusederivedunit{\momentum{4}},
-\hereusealternativeunit{\momentum{4}}
+\hereusebaseunits{\momentum{4}},
+\hereusederivedunits{\momentum{4}},
+\hereusealternateunits{\momentum{4}}
 
-\hereusebaseunit{\acceleration{4}},
-\hereusederivedunit{\acceleration{4}},
-\hereusealternativeunit{\acceleration{4}}
+\hereusebaseunits{\acceleration{4}},
+\hereusederivedunits{\acceleration{4}},
+\hereusealternateunits{\acceleration{4}}
 
-\hereusebaseunit{\magneticfield{4}},
-\hereusederivedunit{\magneticfield{4}},
-\hereusealternativeunit{\magneticfield{4}}
+\hereusebaseunits{\magneticfield{4}},
+\hereusederivedunits{\magneticfield{4}},
+\hereusealternateunits{\magneticfield{4}}
 
-\begin{usebaseunit}
+\begin{usebaseunits}
   \momentum{4}, \acceleration{4}, \magneticfield{4}
-\end{usebaseunit}
+\end{usebaseunits}
 
-\begin{usederivedunit}
+\begin{usederivedunits}
   \momentum{4}, \acceleration{4}, \magneticfield{4}
-\end{usederivedunit}
+\end{usederivedunits}
 
-\begin{usealternativeunit}
+\begin{usealternateunits}
   \momentum{4}, \acceleration{4}, \magneticfield{4}
-\end{usealternativeunit}
+\end{usealternateunits}
 
-\momentumonlybaseunit, \momentumonlyderivedunit, \momentumonlyalternativeunit
+\momentumonlybaseunits, \momentumonlyderivedunits, \momentumonlyalternateunits
 
 \chkquantity{acceleration}
 \chkquantity{amount}
@@ -440,12 +443,14 @@ amount (\amount{3}), and luminous intensity (\luminous{3}).
 \subsection{Physical Constants}
 \pkg{mandi} knows every physical constant important to introductory physics. 
 
-\begin{usederivedunit}
+\( \oofpezmathsymbol = \oofpez \)
+
+\begin{usederivedunits}
 \begin{align*}
   \oofpezmathsymbol &= \oofpez \\
   \mzofpmathsymbol  &= \mzofp
 \end{align*}
-\end{usederivedunit}
+\end{usederivedunits}
 
 \chkconstant{avogadro}
 \chkconstant{bohrradius}
